@@ -1,0 +1,70 @@
+{
+  "name": "lazy-jack-flutter-freezed",
+  "displayName": "lazyJ flutter freezed extension",
+  "description": "lets go",
+  "version": "0.0.2",
+  "publisher": "jackFan",
+  "icon": "image/lazy_man.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Snippets"
+  ],
+  "keywords": [
+    "flutter",
+    "bloc",
+    "freezed"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "snippets": [
+      {
+        "path": "./snippets/snippets.code-snippets"
+      },
+      {
+        "language": "dart",
+        "path": "./snippets/dart_freezed.json"
+      },
+      {
+        "language": "dart",
+        "path": "./snippets/dart_unit_test.json"
+      },
+      {
+        "language": "dart",
+        "path": "./snippets/dart.json"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "exclude": [
+    "node_modules",
+    ".vscode"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jack-fan1991/lazy-jack-flutter-extension"
+  },
+ 
+  "dependencies": {
+    "@types/node": "^18.15.11",
+    "@types/vscode": "^1.77.0",
+    "axios": "^1.3.2",
+    "change-case": "^4.1.2",
+    "cheerio": "^1.0.0-rc.12",
+    "iconv-lite": "^0.6.3",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.19",
+    "vsce": "^2.15.0",
+    "yaml": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
+    "@types/lodash": "^4.14.194"
+  }
+}

@@ -1,0 +1,67 @@
+{
+   "Clipboard to Uppercase": {
+      "prefix": "c2upCase",
+      "body": [
+        "${CLIPBOARD/.*/${0:/upcase}/}$0"
+      ]
+    },
+    "Clipboard to lowerCase": {
+      "prefix": "c2lowCase",
+      "body": [
+        "${CLIPBOARD/.*/${0:/downcase}/}$0"
+      ]
+    },
+    "Clipboard to camelCase": {
+      "prefix": "c2camelCase",
+      "body": [
+        "${CLIPBOARD/.*/${0:/camelcase}/}$0"
+      ]
+    }
+  }
+
+
+//   {
+//     "to upcase": {
+//       "body": [
+//         "${TM_SELECTED_TEXT/.*/${0:/upcase}/}$0"
+//       ]
+//     },
+//     "to lowercase": {
+//       "body": [
+//         "${TM_SELECTED_TEXT/.*/${0:/downcase}/}$0"
+//       ]
+//     },  
+//     "to camelcase": {
+//       "body": [
+//         "${TM_SELECTED_TEXT/.*/${0:/camelcase}/}$0"
+//       ]
+//     },    
+//     "Clipboard to Uppercase": {
+//         "prefix": "c2upCase",
+//         "body": [
+//           "${CLIPBOARD/.*/${0:/upcase}/}$0"
+//         ]
+//       },
+//       "Clipboard to lowerCase": {
+//         "prefix": "c2lowCase",
+//         "body": [
+//           "${CLIPBOARD/.*/${0:/downcase}/}$0"
+//         ]
+//       },
+//       "Clipboard to camelCase": {
+//         "prefix": "c2camelCase",
+//         "body": [
+//           "${CLIPBOARD/.*/${0:/camelcase}/}$0"
+//         ]
+//       },
+//       "Function definition": {
+//         "prefix": "fun",
+//         "body": [
+//           "${2:returnType} ${3:functionName}() {",
+//           "\t\t$2  ${2/(.*)/${1:/camelcase}/}= $2();",
+//           "\t\treturn ${2/(.*)/${1:/camelcase}/};",
+//           "}"
+//         ],
+//         "description": "Define user defined function"
+//       }
+//     }

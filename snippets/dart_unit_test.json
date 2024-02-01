@@ -1,0 +1,28 @@
+{
+  "Unit test": {
+    "prefix": "ut",
+    "body": [
+      "test('${1:testName} ', () {",
+      "//Arrange - Setup facts, Put Expected outputs or Initilize\n",
+      "//Act - Call the function that is to be tested\n",
+      "//Assert - Compare the actual result and expected result\n",
+      "});"
+    ],
+    "description": "Define a Unit test"
+  },
+  "Unit test group": {
+    "prefix": "utg",
+    "body": [
+      "\tgroup('${1:groupName}', () {",
+      "\t\ttest('${2:testName}', () {",
+      "\t\t\t\t//Arrange - Setup facts, Put Expected outputs or Initilize\n",
+      "\t\t\t\t//Act - Call the function that is to be tested\n",
+      "\t\t\t\t//Assert - Compare the actual result and expected result\n",
+      "\t\t\t\t${3:case}",
+      "\t\t\t});",
+      "\t\t},",
+      "\t);"
+    ],
+    "description": "Define a Unit test group"
+  }
+}

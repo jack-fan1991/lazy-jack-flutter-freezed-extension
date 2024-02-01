@@ -1,0 +1,143 @@
+{
+  "For Loop": {
+    "prefix": ["forLoop"],
+    "body": ["for (final ${2:element} in ${1:array}) {", "\t$0", "}"],
+    "description": "A for loop."
+  },
+  "For Loop block": {
+    "prefix": "for",
+    "body": ["for ( int ${1:i} = 0 ; $1 < ${2:10} ; $1 ++ ){", "\t$3", "}"],
+    "description": "Create a For-Loop Block"
+  },
+  
+  "Try Catch Block": {
+    "prefix": "tryCatch",
+    "body": [
+      "try { ",
+      "${1:}",
+      "} catch (exception) {",
+      "  print(exception.toString());",
+      "}"
+    ],
+    "description": "Create a try-catch block to use exception object"
+  },
+  "Try-On-Catch Block": {
+    "prefix": "tryOnCatch",
+    "body": [
+      "try { ",
+      "\t$2",
+      "} on ${1:exceptionType} {",
+      "",
+      "} catch(exception) {",
+      "\t$3",
+      "  print(exception.toString());",
+      "}"
+    ],
+    "description": "Create a try-on-catch block to handle specific exception and use exception object"
+  },
+  "Clipboard to factory ": {
+    "prefix": "c2Factory",
+    "body": ["const factory ${1:${CLIPBOARD/(.*)/${1:/pascalcase}/g}}.${2:name}(${4}) => $1($3);"],
+    "description": "Clipboard to factory"
+  },
+  "Clipboard to Crate FromJson": {
+    "prefix": "c2FromJson",
+    "body": [
+      "factory ${1:$CLIPBOARD}.fromJson(Map<String, dynamic> json) => _$${1}FromJson(json);",
+      "Map<String, dynamic> toJson() => _$${1}ToJson(this);"
+    ],
+    "description": "Clipboard Class Name to FromJson"
+  },
+  "Crate FromJson": {
+    "prefix": "b2fromJson",
+    "body": [
+      "factory ${1:$TM_FILENAME_BASE}.fromJson(Map<String, dynamic> json) => _$${1}FromJson(json);",
+      "Map<String, dynamic> toJson() => _$${1}ToJson(this);"
+    ],
+    "description": "Crate FromJson by base filename"
+  },
+  "pop": {
+    "prefix": "pop",
+    "body": [
+      "Navigator.pop(context);"
+    ],
+    "description": "Navigator.pop"
+  },
+  "Navigator": {
+    "prefix": "nav",
+    "body": [
+      "Navigator"
+    ],
+    "description": "Navigator"
+  }
+}
+
+
+// {
+//   "For Loop": {
+//     "prefix": ["forLoop"],
+//     "body": ["for (final ${2:element} in ${1:array}) {", "\t$0", "}"],
+//     "description": "A for loop."
+//   },
+//   "For Loop block": {
+//     "prefix": "for",
+//     "body": ["for ( int ${1:i} = 0 ; $1 < ${2:10} ; $1 ++ ){", "\t$3", "}"],
+//     "description": "Create a For-Loop Block"
+//   },
+//   "New final field ": {
+//     "prefix": "finalFieldNew",
+//     "body": ["final ${1/(.*)/${1:/camelcase}/}= ${1:Field}();"],
+//     "description": "final field = Field()"
+//   },
+//   "Final field ": {
+//     "prefix": "finalField",
+//     "body": ["final ${1:Field} ${1/(.*)/${1:/camelcase}/};"],
+//     "description": "Freezed Union Case for bloc state case ,copy string as default factory class name"
+//   },
+//   "Try Catch Block": {
+//     "prefix": "tryCatch",
+//     "body": [
+//       "try { ",
+//       "${1:}",
+//       "} catch (exception) {",
+//       "  print(exception.toString());",
+//       "}"
+//     ],
+//     "description": "Create a try-catch block to use exception object"
+//   },
+//   "Try-On-Catch Block": {
+//     "prefix": "tryOnCatch",
+//     "body": [
+//       "try { ",
+//       "\t$2",
+//       "} on ${1:exceptionType} {",
+//       "",
+//       "} catch(exception) {",
+//       "\t$3",
+//       "  print(exception.toString());",
+//       "}"
+//     ],
+//     "description": "Create a try-on-catch block to handle specific exception and use exception object"
+//   },
+//   "Clipboard to factory ": {
+//     "prefix": "c2Factory",
+//     "body": ["const factory ${1:${CLIPBOARD/(.*)/${1:/pascalcase}/g}}.${2:name}(${4}) => $1($3);"],
+//     "description": "Clipboard to factory"
+//   },
+//   "Clipboard to Crate FromJson": {
+//     "prefix": "c2FromJson",
+//     "body": [
+//       "factory ${1:$CLIPBOARD}.fromJson(Map<String, dynamic> json) => _$${1}FromJson(json);",
+//       "Map<String, dynamic> toJson() => _$${1}ToJson(this);"
+//     ],
+//     "description": "Clipboard Class Name to FromJson"
+//   },
+//   "Crate FromJson": {
+//     "prefix": "b2fromJson",
+//     "body": [
+//       "factory ${1:$TM_FILENAME_BASE}.fromJson(Map<String, dynamic> json) => _$${1}FromJson(json);",
+//       "Map<String, dynamic> toJson() => _$${1}ToJson(this);"
+//     ],
+//     "description": "Crate FromJson by base filename"
+//   }
+// }

@@ -1,0 +1,46 @@
+{
+  "import freezed part": {
+    "prefix": ["fz.p"],
+    "body": ["part '${TM_FILENAME_BASE}.${1|g,freezed|}.dart';", "$2"],
+    "description": "create part for freezed"
+  },
+  "Freezed Data Class": {
+    "prefix": "fzClass",
+    "body": [
+      "@freezed",
+      "class ${1:${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g}} with _$$1{",
+      "  const ${1}._();",
+      "  const factory ${1}(${2}) = _${1};",
+      "}"
+    ],
+    "description": "Freezed Data Class"
+  },
+  "Freezed Union Class": {
+    "prefix": "fzUnion",
+    "body": [
+      "@freezed",
+      "class ${1:${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g}} with _$$1{",
+      "  const ${1}._();",
+      "  const factory $1.${2:initial}(${3}) = _${2/(.*)/${1:/capitalize}/};",
+      "\t$4",
+      "}"
+    ],
+    "description": "Create Freezed Union class by base file name"
+  },
+  "Add New freezed State": {
+    "prefix": "fzAddState",
+    "body": [
+      "const factory ${1:${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g}}.${2:newState}(${3}) = _${2/(.*)/${1:/capitalize}/};",
+      "\t$4"
+    ],
+    "description": "Add New Freezed State"
+  },
+  "Clipboard to Freezed State": {
+    "prefix": "fzC2State",
+    "body": [
+      "const factory $CLIPBOARD.${2:newState}(${3}) = _${2/(.*)/${1:/capitalize}/};"
+    ],
+    "description": "Clipboard to Freezed State"
+  }
+  
+}
