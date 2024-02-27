@@ -5,6 +5,7 @@ import { StatusCode } from '../error_code';
 import { getActivateText, getActivateTextEditor, reFormat } from '../../utils/src/vscode_utils/activate_editor_utils';
 import { findClassRegex, findFreezedClassRegex } from '../../utils/src/regex/regex_utils';
 import { FlutterOpenCloseFinder } from '../../utils/src/regex/open_close_finder';
+import { getAbsFilePath, getCursorLineText, replaceText } from '../../utils/src/vscode_utils/editor_utils';
 
 const flutterOpenCloseFinder = new FlutterOpenCloseFinder();
 
@@ -33,9 +34,9 @@ export class FreezedUnionFixer implements CodeActionProviderInterface<string> {
         let match = line.match(findFreezedClassRegex) ?? [];
         let classNameMatch = line.match(findClassRegex) ?? []
         let classRange = flutterOpenCloseFinder.findRange(document, range.start.line)
-     
+
         if (match.length > 0) {
-            actions.push(this.createAddUnitStateAction(document, range,classNameMatch[1]));
+            actions.push(this.createAddUnitStateAction(document, range, classNameMatch[1]));
             if (classNameMatch.length > 0) {
                 let className = classNameMatch[1]
                 let factoryLine = `factory ${className}.fromJson`
@@ -53,7 +54,7 @@ export class FreezedUnionFixer implements CodeActionProviderInterface<string> {
                 if (classNameMatch.length > 0) {
                     let className = classNameMatch[1]
                     if (line.includes(`factory ${className}.`)) {
-                        actions.push(this.createAddUnitStateAction(document, range,className));
+                        actions.push(this.createAddUnitStateAction(document, range, className));
                         break
                     }
                 }
@@ -63,16 +64,16 @@ export class FreezedUnionFixer implements CodeActionProviderInterface<string> {
 
     }
 
-    createAddUnitStateAction(document: vscode.TextDocument, range: vscode.Range, className:string): vscode.CodeAction {
-        const title ="Add Union state"
+    createAddUnitStateAction(document: vscode.TextDocument, range: vscode.Range, className: string): vscode.CodeAction {
+        const title = "Add sealed state"
         const fix = new vscode.CodeAction(title, vscode.CodeActionKind.Refactor);
-        fix.command = { command: FreezedUnionFixer.command, title: title, arguments: [document, range,className] };
+        fix.command = { command: FreezedUnionFixer.command, title: title, arguments: [document, range, className] };
         fix.isPreferred = true;
         return fix;
     }
 
-    createAddFromJsonFixAction(document: vscode.TextDocument, range: vscode.Range, ): vscode.CodeAction {
-        const title ="Add from json method"
+    createAddFromJsonFixAction(document: vscode.TextDocument, range: vscode.Range,): vscode.CodeAction {
+        const title = "Add from json method"
         const fix = new vscode.CodeAction(title, vscode.CodeActionKind.Refactor);
         fix.command = { command: FreezedUnionFixer.commandAddFromJson, title: title, arguments: [document, range] };
         fix.isPreferred = true;
@@ -86,7 +87,7 @@ export class FreezedUnionFixer implements CodeActionProviderInterface<string> {
     // 註冊action 按下後的行為
     setOnActionCommandCallback(context: vscode.ExtensionContext) {
         // 注册 Quick Fix 命令
-        context.subscriptions.push(vscode.commands.registerCommand(FreezedUnionFixer.command, async (document: vscode.TextDocument, range: vscode.Range,className:string) => {
+        context.subscriptions.push(vscode.commands.registerCommand(FreezedUnionFixer.command, async (document: vscode.TextDocument, range: vscode.Range, className: string) => {
             const editor = vscode.window.activeTextEditor;
             if (!editor)
                 return;
@@ -94,10 +95,19 @@ export class FreezedUnionFixer implements CodeActionProviderInterface<string> {
             // let line = document.lineAt(linePosition).text
             // let match = line.match(findClassRegex) ?? []
             // let className = match[1]
+            let line = await getCursorLineText();
+            if (!line?.startsWith("sealed")) {
+                await editor.edit(editBuilder => {
+                    editBuilder.replace(new vscode.Range(new vscode.Position(linePosition, 0), new vscode.Position(linePosition, line!.length)), `sealed ${line} `);
+                }
+                )
+
+            }
             let insertPosition = linePosition;
             while (true) {
                 insertPosition++
                 let line: string = document.lineAt(insertPosition).text
+
                 if (line != "}") continue
                 let preLine: string = document.lineAt(insertPosition - 1).text
                 let preLine2: string = document.lineAt(insertPosition - 2).text
@@ -111,6 +121,9 @@ export class FreezedUnionFixer implements CodeActionProviderInterface<string> {
                     break
                 }
                 if (line === "}") {
+                    if (!preLine.includes('factory')) {
+                        break
+                    }
                     insertPosition--
                     break
                 }
@@ -119,10 +132,11 @@ export class FreezedUnionFixer implements CodeActionProviderInterface<string> {
 
             }
             const snippet = new vscode.SnippetString(
-                `\tconst factory ${className}` + ".${2:newState}() = _${2/(.*)/${1:/capitalize}/};" +
+                `\tconst factory ${className}` + ".${2:newState}() = ${2/(.*)/${1:/capitalize}/};" +
                 "\t\n"
             );
             editor.insertSnippet(snippet, new vscode.Position(insertPosition, 0),);
+
             reFormat()
         }
         )
