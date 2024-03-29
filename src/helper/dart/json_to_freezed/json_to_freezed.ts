@@ -14,8 +14,8 @@ const firstImport = `import 'package:freezed_annotation/freezed_annotation.dart'
 let jsonObjectManger = new JsonObjectManger()
 
 export function registerJsonToFreezed(context: vscode.ExtensionContext) {
-    context.subscriptions.push(vscode.commands.registerCommand(command_dart_json_to_freezed, async () => {
-        await freezedGenerator()
+    context.subscriptions.push(vscode.commands.registerCommand(command_dart_json_to_freezed, async (className) => {
+        await freezedGenerator(className)
         runTerminal('flutter pub run build_runner build --delete-conflicting-outputs', "build_runner")
 
     }));
@@ -33,7 +33,7 @@ function findOuterKeys(jsonString: string): string[] {
     return outerKeys;
 }
 
-export async function freezedGenerator() {
+export async function freezedGenerator(costumerClass:string|undefined = undefined) {
     jsonObjectManger = new JsonObjectManger()
     const editor = vscode.window.activeTextEditor;
     if (!editor)
@@ -47,23 +47,28 @@ export async function freezedGenerator() {
     let text = getActivateText()
 
     let jsonObject = tryParseJson(selectedText);
-    let className = toUpperCamelCase(baseFileName);
-    if (getActivateText().includes(`class ${className}`)) {
-        className = findOuterKeys(getSelectedText())[0];
-        className = toUpperCamelCase(className);
-    } else {
-        for (let importText of [firstImport, fileNameGPart, fileNameFPart]) {
-            if (!text.includes(importText)) {
-                importLine.push(importText)
+    
+    let className =  costumerClass
+    if(costumerClass ==undefined ||'' ){
+        className = toUpperCamelCase(baseFileName);
+        if (getActivateText().includes(`class ${className}`)) {
+            className = findOuterKeys(getSelectedText())[0];
+            className = toUpperCamelCase(className);
+        } else {
+            className =toUpperCamelCase(baseFileName);
+            for (let importText of [firstImport, fileNameGPart, fileNameFPart]) {
+                if (!text.includes(importText)) {
+                    importLine.push(importText)
+                }
             }
         }
-    }
+    }   
     // 回傳最接近的[type,type,type]
     // type = string | number | boolean | object | array
     // 因為是第一層所以如果 object 則用 baseFileName 當作 class 名稱
     // 如果是 array 則需要知道是什麼類型的array parse 應該要回傳 [array 的 type]
     await parse(jsonObject, className)
-    let finalResult = importLine.join('\n') + '\n\n' + jsonObjectManger.toFreezedTemplate(className);
+    let finalResult = importLine.join('\n') + '\n\n' + jsonObjectManger.toFreezedTemplate(className!);
     console.log(`===================`);
     console.log(`result: ${finalResult}`);
     // generateClassTemplate(jsonObject, className);

@@ -6,9 +6,16 @@ import { command_dart_json_to_freezed, freezedGenerator } from '../../helper/dar
 
 
 export class JsonToFreezedFixer implements CodeActionProviderInterface<string> {
-    public static readonly command = 'JsonToFreezedFixer.command';
+    createAddUnitStateAction(document: vscode.TextDocument, range: vscode.Range, data: string): vscode.CodeAction {
+        throw new Error('Method not implemented.');
+    }
+    resolveCodeAction?(codeAction: vscode.CodeAction, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeAction> {
+        throw new Error('Method not implemented.');
+    }
+    public static readonly convertToFreezed = 'JsonToFreezedFixer.baseOnFileName';
+    public static readonly innerClassFix = 'JsonToFreezedFixer.innerClass';
     public static partLineRegex = new RegExp(/^part.*[;'"]$/)
-    getCommand() { return JsonToFreezedFixer.command }
+    getCommand() { return JsonToFreezedFixer.convertToFreezed }
     getProvidedCodeActionKinds() { return [vscode.CodeActionKind.Refactor]; }
     getErrorCode() { return StatusCode.Pass }
     getLangrageType() { return 'dart' }
@@ -24,7 +31,10 @@ export class JsonToFreezedFixer implements CodeActionProviderInterface<string> {
         try {
             let result = JSON.parse(text)
             console.log(`json: ${result}`);
-            const quickFixPart = this.createAddUnitStateAction(document, range, "Convert to Freezed");
+            const quickFixPart = this.createCommonAction(JsonToFreezedFixer.convertToFreezed,document, range, "Json To Freezed (base on file name) ");
+            const innerClassFixer = this.createCommonAction(JsonToFreezedFixer.innerClassFix,document, range, "Json to Freezed (inner class) ");
+            // 將所有程式碼動作打包成陣列，並回傳
+            return [quickFixPart,innerClassFixer];
             // 將所有程式碼動作打包成陣列，並回傳
             return [quickFixPart];
         } catch (e) {
@@ -32,9 +42,9 @@ export class JsonToFreezedFixer implements CodeActionProviderInterface<string> {
         }
     }
 
-    createAddUnitStateAction(document: vscode.TextDocument, range: vscode.Range, data: string): vscode.CodeAction {
+    createCommonAction(command:string, document: vscode.TextDocument, range: vscode.Range, data: string): vscode.CodeAction {
         const fix = new vscode.CodeAction(data, vscode.CodeActionKind.Refactor);
-        fix.command = { command: JsonToFreezedFixer.command, title: data, arguments: [document, range]};
+        fix.command = { command: command, title: data, arguments: [document, range]};
         fix.diagnostics = [this.createDiagnostic(range, data)];
         fix.isPreferred = true;
         return fix;
@@ -47,8 +57,16 @@ export class JsonToFreezedFixer implements CodeActionProviderInterface<string> {
     // 註冊action 按下後的行為
     setOnActionCommandCallback(context: vscode.ExtensionContext) {
         // 注册 Quick Fix 命令
-        context.subscriptions.push(vscode.commands.registerCommand(JsonToFreezedFixer.command, async (document: vscode.TextDocument, range: vscode.Range) => {
+        context.subscriptions.push(vscode.commands.registerCommand(JsonToFreezedFixer.convertToFreezed, async (document: vscode.TextDocument, range: vscode.Range) => {
             await vscode.commands.executeCommand(command_dart_json_to_freezed)
+        }));
+        context.subscriptions.push(vscode.commands.registerCommand(JsonToFreezedFixer.innerClassFix, async (document: vscode.TextDocument, range: vscode.Range) => {
+            const className = await vscode.window.showInputBox({
+                prompt: 'Generate class name :'
+            })
+            if (className) {
+                await vscode.commands.executeCommand(command_dart_json_to_freezed, className);
+            } 
         }));
     }
 
