@@ -153,9 +153,11 @@ export class FreezedFixer implements CodeActionProviderInterface<FreezedFixInfo>
     handleLine(document: vscode.TextDocument, range: vscode.Range): FreezedFixInfo | undefined {
         let partLine = document.lineAt(range.start.line).text
         let text = document.getText()
+        if(text.includes('ignore freezed'))return
         let baseFileName = path.basename(getAbsFilePath(document.uri)).replace('.dart', '')
         let partFLine = this.getPartFreezedLine(document.uri)
         let partGLine = this.getPartGLine(document.uri)
+
         if (partLine.includes(`.fromJson(`) && (this.isFreezed(text) || text.includes('@JsonSerializable(')) && !text.replace(/\s/g, '').includes('partof') && !text.includes('g.dart')) {
             let data = new FreezedFixInfo(getAbsFilePath(document.uri), 'fixImport', `Fix import ${partGLine}`, partGLine)
             this.runCommand(document, data)
