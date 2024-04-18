@@ -2,21 +2,23 @@ import * as vscode from 'vscode';
 import { EzCodeActionProviderInterface } from '../../code_action';
 import * as fs from 'fs';
 import path = require('path');
-import { BiggerOpenCloseFinder, FlutterOpenCloseFinder } from '../../../utils/src/regex/open_close_finder';
+import { FlutterOpenCloseFinder } from '../../../utils/src/regex/open_close_finder';
 import { getActivateEditor, getActivateFileAsUri, getCursorLineText, getFolderPath, openEditor, replaceText } from '../../../utils/src/vscode_utils/editor_utils';
-import { getActivateText, insertToActivateEditor, reFormat } from '../../../utils/src/vscode_utils/activate_editor_utils';
+import { getActivateText, reFormat } from '../../../utils/src/vscode_utils/activate_editor_utils';
 import { findClassRegex, toSnakeCase } from '../../../utils/src/regex/regex_utils';
-import { logError, logInfo } from '../../../utils/src/logger/logger';
+import { logInfo } from '../../../utils/src/logger/logger';
 import { PartPair, createPartLine, insertPartLine } from '../../../helper/dart/part_utils';
 import { APP } from '../../../extension';
-import { find } from 'lodash';
-import { sleep } from '../../../utils/src/vscode_utils/vscode_utils';
 
 const flutterOpenCloseFinder = new FlutterOpenCloseFinder();
 
 
 
 export class ClassQuickFix implements EzCodeActionProviderInterface {
+    
+    resolveCodeAction?(codeAction: vscode.CodeAction, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeAction> {
+        throw new Error('Method not implemented.');
+    }
 
     getLangrageType(): vscode.DocumentSelector {
         return { scheme: 'file' }
@@ -25,7 +27,7 @@ export class ClassQuickFix implements EzCodeActionProviderInterface {
     public static readonly commandExtractClass = 'ExtractClassFixer.extract.class';
     public static readonly commandAddHiveAdapter = 'ExtractClassFixer.hive.adapter';
 
-    // 編輯時對單行檢測
+    // // 編輯時對單行檢測
     public provideCodeActions(document: vscode.TextDocument, range: vscode.Range): vscode.CodeAction[] | undefined {
         let cursorLineText = getCursorLineText()
         if (cursorLineText == undefined) return undefined

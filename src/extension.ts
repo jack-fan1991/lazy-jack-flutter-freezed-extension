@@ -6,6 +6,7 @@ import { checkGitExtensionInYamlIfDart } from './utils/src/language_utils/dart/p
 import { registerJsonToFreezed } from './helper/dart/json_to_freezed/json_to_freezed';
 import { SidebarManager } from './utils/src/vscode_feature/sidebar/sidebar_manger';
 import { log } from 'console';
+import { registerFileListener } from './vscode_file_listener/activate_file_listener';
 let sidebarManger = new SidebarManager()
 export class APP {
   public static yaml: any|undefined = undefined;
@@ -22,6 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   codeAction.register(context)
   registerEzAction(context)
+  registerFileListener(context)
 
 }
 
