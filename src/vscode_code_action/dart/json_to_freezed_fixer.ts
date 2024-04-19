@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { CodeActionProviderInterface } from '../code_action';
 import { StatusCode } from '../error_code';
 import { command_dart_json_to_freezed, freezedGenerator } from '../../helper/dart/json_to_freezed/json_to_freezed';
+import { toUpperCamelCase } from '../../utils/src/regex/regex_utils';
 
 
 export class JsonToFreezedFixer implements CodeActionProviderInterface<string> {
@@ -32,6 +33,8 @@ export class JsonToFreezedFixer implements CodeActionProviderInterface<string> {
             let result = JSON.parse(text)
             console.log(`json: ${result}`);
             const quickFixPart = this.createCommonAction(JsonToFreezedFixer.convertToFreezed,document, range, "Json To Freezed (base on file name) ");
+    
+            
             const innerClassFixer = this.createCommonAction(JsonToFreezedFixer.innerClassFix,document, range, "Json to Freezed (inner class) ");
             // 將所有程式碼動作打包成陣列，並回傳
             return [quickFixPart,innerClassFixer];
@@ -60,9 +63,28 @@ export class JsonToFreezedFixer implements CodeActionProviderInterface<string> {
         context.subscriptions.push(vscode.commands.registerCommand(JsonToFreezedFixer.convertToFreezed, async (document: vscode.TextDocument, range: vscode.Range) => {
             await vscode.commands.executeCommand(command_dart_json_to_freezed)
         }));
+        
         context.subscriptions.push(vscode.commands.registerCommand(JsonToFreezedFixer.innerClassFix, async (document: vscode.TextDocument, range: vscode.Range) => {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) return [];
+            const selection = editor.selection;
+            const text = document.getText(selection).replace(/\s/g, '');
+            let firstKey = ''
+            let count = 0
+            for(let s of text){
+                if(s=="{"||s=="["){
+                    count++
+                }
+                firstKey+=s
+                if(count==2){
+                    firstKey= firstKey.replace("{","").replace("[","").replace('"',"").replace(':',"")
+                    break
+                }
+            }
+        
             const className = await vscode.window.showInputBox({
-                prompt: 'Generate class name :'
+                prompt: 'Generate class name :',
+                value: toUpperCamelCase(firstKey.replace("{","").replace("[","").replace('"',"").replace(':',"")) 
             })
             if (className) {
                 await vscode.commands.executeCommand(command_dart_json_to_freezed, className);

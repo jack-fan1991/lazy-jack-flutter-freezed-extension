@@ -33,7 +33,7 @@ function findOuterKeys(jsonString: string): string[] {
     return outerKeys;
 }
 
-export async function freezedGenerator(costumerClass:string|undefined = undefined) {
+export async function freezedGenerator(costumerClass: string | undefined = undefined) {
     jsonObjectManger = new JsonObjectManger()
     const editor = vscode.window.activeTextEditor;
     if (!editor)
@@ -47,22 +47,22 @@ export async function freezedGenerator(costumerClass:string|undefined = undefine
     let text = getActivateText()
 
     let jsonObject = tryParseJson(selectedText);
-    
-    let className =  costumerClass
-    if(costumerClass ==undefined ||'' ){
+
+    let className = costumerClass
+    if (costumerClass == undefined || '') {
         className = toUpperCamelCase(baseFileName);
         if (getActivateText().includes(`class ${className}`)) {
             className = findOuterKeys(getSelectedText())[0];
             className = toUpperCamelCase(className);
         } else {
-            className =toUpperCamelCase(baseFileName);
+            className = toUpperCamelCase(baseFileName);
             for (let importText of [firstImport, fileNameGPart, fileNameFPart]) {
                 if (!text.includes(importText)) {
                     importLine.push(importText)
                 }
             }
         }
-    }   
+    }
     // 回傳最接近的[type,type,type]
     // type = string | number | boolean | object | array
     // 因為是第一層所以如果 object 則用 baseFileName 當作 class 名稱
@@ -118,25 +118,49 @@ async function parse(jsonObject: any, parentKey: string = "", objInArray: boolea
 
 
 async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Promise<string> {
+    let childCount = Object.keys(obj).length
+
     for (const key in obj) {
         // console.log(`key: ${key}`)
-        if (obj.hasOwnProperty(key)) {
-            let child = obj[key]
+        let className = key
+        if (obj.hasOwnProperty(className)) {
+            let child = obj[className]
             let childType = typeof child
+            console.log(`解析 key : ${parentKey}, 生成物件 : ${className}, 物件類型 : ${childType} `)
+            ///子子類別
+            let childChild = child[Object.keys(child)[0]]
+            let childChildType = typeof childChild
+            /// 自己是 object 子子類別也是 object
+            let isLastChildMapType = childType === 'object' && childChildType === 'object'
             if (childType === 'object' && child !== null) {
                 let customTypeManger: CustomTypeManger = jsonObjectManger.getCustomTypeManger(parentKey) ?? new CustomTypeManger();
                 let customType: CustomType;
+                // 最後結點為[]
                 if (Array.isArray(child)) {
-                    customType = arrayPramsFmt(child, key, key)
-                } else {
-                    customType = getFiledToFreezedFormat(child, key, key)
+                    customType = arrayPramsFmt(child, className, className)
+                    console.log(`[]型態 : parentKey ${parentKey}, className : ${className}`)
+                }
+                //最後結點為{}
+                // else if (isLastChildMapType) {
+                //     className = `${toUpperCamelCase(className)}`
+                //     customType = new CustomType(`Map<String,${className}>`, key, false,true)
+                //     console.log(`{}型態: parentKey : ${parentKey}, className : ${className}`)
+                //     // 只處理第一個子子類別物件
+                //     // child =childChild
+                // }
+                // 最後結點為基礎型態
+                else {
+                    customType = getFiledToFreezedFormat(child, className, className)
+                    console.log(`基礎型態:${parentKey}, 屬性 : ${className}`)
                 }
 
                 // console.log(`freezedFieldFormat: ${customType.toFreezedFieldFormat()}`)
+                console.log(`freezedFieldFormat: ${customType.toFreezedFieldFormat()}`)
                 customTypeManger.addCustomType(customType)
                 jsonObjectManger.setCustomTypeManger(parentKey, customTypeManger)
-                jsonObjectManger.printCache()
-                await parse(child, key)
+                // jsonObjectManger.printCache()
+                await parse(child, className)
+
                 // console.log(`freezedFieldFormat: ${freezedFieldFormat}`)
                 // console.log(`freezedField: ${freezedFields}`)
                 // let template = freezedClassTemplate(key, freezedFieldFormat)
@@ -144,11 +168,11 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
             } else {
                 // 單純的
                 let customTypeManger: CustomTypeManger = jsonObjectManger.getCustomTypeManger(parentKey) ?? new CustomTypeManger();
-                let customType: CustomType = getFiledToFreezedFormat(child, key)
-                // console.log(`freezedFieldFormat: ${customType.toFreezedFieldFormat()}`)
+                let customType: CustomType = getFiledToFreezedFormat(child, className)
+                console.log(`freezedFieldFormat=> ${customType.toFreezedFieldFormat()}`)
                 customTypeManger.addCustomType(customType)
                 jsonObjectManger.setCustomTypeManger(parentKey, customTypeManger)
-                jsonObjectManger.printCache()
+                // jsonObjectManger.printCache()
             }
         }
     }

@@ -21,6 +21,7 @@ export class JsonObjectManger {
     printCache(): void {
         for (const key of this.freezedFieldsCache.keys()) {
             let value = this.freezedFieldsCache.get(key)
+            console.log('============================')
             console.log(`freezedFieldsCache key: ${key} value: ${value?.customTypeList.map((item) => item.toFreezedFieldFormat())}`)
         }
 
@@ -96,13 +97,16 @@ export class CustomType {
     fieldType: string;
     fieldName: string;
     isArray: boolean;
-    constructor(fieldType: any, fieldName: string, isArray: boolean = false) {
+    // 強制使用fieldType
+    customType:boolean;
+    constructor(fieldType: any, fieldName: string, isArray: boolean = false, customType:boolean = false) {
         this.fieldType = fieldType;
         this.fieldName = fieldName;
         this.isArray = isArray;
+        this.customType = customType;
     }
     toFreezedFieldFormat(): string {
-        return this.isArray ? toFreezedArrayFieldFormat(this.fieldType, this.fieldName) : toFreezedFieldFormat(this.fieldType, this.fieldName)
+        return this.isArray ? toFreezedArrayFieldFormat(this.fieldType, this.fieldName) : toFreezedFieldFormat(this.fieldType, this.fieldName, this.customType)
     }
 }
 
