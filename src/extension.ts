@@ -15,10 +15,10 @@ export class APP {
 export async function activate(context: vscode.ExtensionContext) {
   console.log('your extension "lazy-jack-flutter-freezed-extension" is now active!')
   //  updateGitSubModule(context)
-  // checkGitExtensionInYamlIfDart(true).then((yaml) => {
-  //   APP.yaml = yaml
-  //   log(APP.yaml)
-  // })
+  checkGitExtensionInYamlIfDart(true).then((yaml) => {
+    APP.yaml = yaml
+    log(APP.yaml)
+  })
   registerJsonToFreezed(context)
 
   codeAction.register(context)

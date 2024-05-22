@@ -1,0 +1,2 @@
+- 0.0.12
+- fix freezed to hive adapter

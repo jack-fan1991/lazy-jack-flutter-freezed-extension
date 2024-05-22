@@ -36,6 +36,10 @@ export class ClassQuickFix implements EzCodeActionProviderInterface {
         let upLineText = document.lineAt(range.start.line - 1).text
         let nextLineText = document.lineAt(range.start.line + 1).text
         if (classRange != undefined) {
+            if(APP.yaml ==undefined){
+                logInfo("pubspec.yaml loading...")
+                return undefined
+            }
             if (upLineText.includes("@freezed") && APP.yaml['dependencies']['hive'] != undefined) {
                 if (!nextLineText.includes("@HiveType")) {
                     actions.push(this.convertFreezedToHiveAction(getActivateEditor()!, classRange))
