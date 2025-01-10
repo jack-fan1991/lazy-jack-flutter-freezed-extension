@@ -132,7 +132,7 @@ export class FreezedUnionFixer implements CodeActionProviderInterface<string> {
 
             }
             const snippet = new vscode.SnippetString(
-                `\tconst factory ${className}` + ".${2:newState}() = ${2/(.*)/${1:/capitalize}/};" +
+                `\tconst factory ${className}` + ".${2:newState}() = _${2/(.*)/${1:/capitalize}/};" +
                 "\t\n"
             );
             editor.insertSnippet(snippet, new vscode.Position(insertPosition, 0),);
