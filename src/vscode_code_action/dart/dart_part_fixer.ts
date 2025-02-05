@@ -54,22 +54,29 @@ export class DartPartFixer implements CodeActionProviderInterface<PartFixInfo> {
             // let partLine = document.lineAt(lineNumber).text;
             targetPath = targetPath.replace(/\\/g, '/');
             let textEditor = await openEditor(targetPath, true)
+           
 
             if (textEditor) {
-                if (importText.includes('part of')) {
-                    let partOfFileText = textEditor.document.getText()
-                    if (!partOfFileText.includes(importText)) {
-                        let partFileText = document!.getText()
+                if ( !importText.includes('part of')) {
+                    let partOfFileText =   document!.getText();
+                    let partEditor =textEditor
+                    let partOfEditor = await openEditor(document!.uri.path, true)
+                    let partFileText  = partEditor.document.getText()
+                    if (!partFileText.includes(importText)) {
                         let partFileImport = partFileText.match(/^import\s+['"][^'"]+['"];/gm) ?? []
                         let lastImportString = partFileImport.pop() ?? ''
                         let lastPartFileImportLineIdx = partFileText.split('\n').indexOf(lastImportString)
                         let moveFromPartOfFile = partOfFileText.match(/^import\s+['"][^'"]+['"];/gm) ?? []
                         let needMove = moveFromPartOfFile.filter((string) => { return !partFileText.includes(string) })
                         /// 把現有的加上新的從第一行取代到最後一個import
-                        let result = [...partFileImport, ...needMove].join('\n')
-                        let replaceRange = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(lastPartFileImportLineIdx, lastImportString.length))
+                        let result = [...partFileImport, ...moveFromPartOfFile,...[importText]].join('\n')
+                        // 去除重複
+                        result = result.split('\n').filter((line, idx, arr) => {
+                            return arr.indexOf(line) === idx
+                        }).join('\n')
+                        let replaceRange = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(lastPartFileImportLineIdx+1, lastImportString.length))
                         let insertIdx = 0
-                        let lines = partOfFileText.split(/\r?\n/)
+                        let lines = partFileText.split(/\r?\n/)
                         for (let l of lines) {
                             if (l.includes('import')) continue
                             if (l.includes('part')) continue
@@ -77,17 +84,22 @@ export class DartPartFixer implements CodeActionProviderInterface<PartFixInfo> {
                             insertIdx = lines.indexOf(l) - 1;
                             break
                         }
-                        await textEditor.edit((editBuilder) => {
-                            editBuilder.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(insertIdx < 0 ? 0 : insertIdx, 0)), importText + '\n')
-                            // editBuilder.insert(new vscode.Position(importText.includes('part') ? lastImportLine : 0, 0), importText + '\n');
-                        })
-                        let moveToEditor = await openEditor(document!.uri.path, true)
-                        if (moveToEditor) {
-                            await moveToEditor.edit((editBuilder) => {
+                        if (partEditor) {
+                            await partEditor.edit((editBuilder) => {
                                 editBuilder.replace(replaceRange, result)
+                            // editBuilder.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(insertIdx < 0 ? 0 : insertIdx, 0)), importText + '\n')
+                            // editBuilder.insert(new vscode.Position(importText.includes('part') ? lastImportLine : 0, 0), importText + '\n');
+                        })}
+                        if (partOfEditor) {
+                            let lines = partOfFileText.split(/\r?\n/)
+                            let lastImportLine = lines.indexOf(lines.pop() ?? '')
+                            let replaceRange = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(lastImportLine-1, 0))
+                        
+                            await partOfEditor.edit((editBuilder) => {
+                                editBuilder.replace(replaceRange,"")
                             })
                         }
-                        vscode.window.showInformationMessage(`Move all "import line" form [ ${removeFolderPath(textEditor.document)} ] to [ ${removeFolderPath(document!)} ]`)
+                        vscode.window.showInformationMessage(`Move all "import line" form [ ${removeFolderPath(document!)} ] to [ ${removeFolderPath(textEditor.document)} ]`)
                         if (textEditor.document.isDirty) {
                             await textEditor.document.save()
                         }
