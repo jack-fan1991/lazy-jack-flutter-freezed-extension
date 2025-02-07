@@ -18,7 +18,7 @@ export const diagnostics = vscode.languages.createDiagnosticCollection("DartPart
 export function register(context: vscode.ExtensionContext) {
     let providers: CodeActionProviderInterface<any>[] = []
     providers.push(new FreezedUnionFixer())
-    providers.push(new DartPartFixer())
+    // providers.push(new DartPartFixer())
     providers.push(new FreezedFixer())
     providers.push(new JsonToFreezedFixer())
     // providers.push(new ParamToRequiredFixer())
