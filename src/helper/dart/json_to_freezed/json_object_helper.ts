@@ -94,19 +94,21 @@ export class CustomTypeManger {
 }
 
 export class CustomType {
+    fieldJsonKey: string;
     fieldType: string;
     fieldName: string;
     isArray: boolean;
     // 強制使用fieldType
     customType:boolean;
-    constructor(fieldType: any, fieldName: string, isArray: boolean = false, customType:boolean = false) {
+    constructor(fieldJsonKey:string, fieldType: any, fieldName: string, isArray: boolean = false, customType:boolean = false) {
+        this.fieldJsonKey = fieldJsonKey;
         this.fieldType = fieldType;
         this.fieldName = fieldName;
         this.isArray = isArray;
         this.customType = customType;
     }
     toFreezedFieldFormat(): string {
-        return this.isArray ? toFreezedArrayFieldFormat(this.fieldType, this.fieldName) : toFreezedFieldFormat(this.fieldType, this.fieldName, this.customType)
+        return this.isArray ? toFreezedArrayFieldFormat(this.fieldType, this.fieldName) : toFreezedFieldFormat(this.fieldJsonKey ,this.fieldType, this.fieldName, this.customType)
     }
 }
 

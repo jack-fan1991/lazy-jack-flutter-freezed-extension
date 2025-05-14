@@ -98,7 +98,7 @@ async function parse(jsonObject: any, parentKey: string = "", objInArray: boolea
                         return wrapperClassName
                     }
                 })
-                let wrapper = new CustomType(arrayObjType, arrayObjType, true)
+                let wrapper = new CustomType(arrayObjType,arrayObjType, arrayObjType, true)
                 console.log(`Add wrapper ${wrapper.toFreezedFieldFormat()}`)
                 jsonObjectManger.classWrapper.set(wrapperClassName, wrapper)
             }
@@ -122,9 +122,9 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
 
     for (const key in obj) {
         // console.log(`key: ${key}`)
-        let className = key
-        if (obj.hasOwnProperty(className)) {
-            let child = obj[className]
+        let className = parentKey+ toUpperCamelCase(key)
+        if (obj.hasOwnProperty(key)) {
+            let child = obj[key]
             let childType = typeof child
             console.log(`解析 key : ${parentKey}, 生成物件 : ${className}, 物件類型 : ${childType} `)
             ///子子類別
@@ -137,7 +137,7 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
                 let customType: CustomType;
                 // 最後結點為[]
                 if (Array.isArray(child)) {
-                    customType = arrayPramsFmt(child, className, className)
+                    customType = arrayPramsFmt( key,child, className, className)
                     console.log(`[]型態 : parentKey ${parentKey}, className : ${className}`)
                 }
                 //最後結點為{}
@@ -150,7 +150,7 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
                 // }
                 // 最後結點為基礎型態
                 else {
-                    customType = getFiledToFreezedFormat(child, className, className)
+                    customType = getFiledToFreezedFormat(child, key,className, className)
                     console.log(`基礎型態:${parentKey}, 屬性 : ${className}`)
                 }
 
@@ -168,7 +168,7 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
             } else {
                 // 單純的
                 let customTypeManger: CustomTypeManger = jsonObjectManger.getCustomTypeManger(parentKey) ?? new CustomTypeManger();
-                let customType: CustomType = getFiledToFreezedFormat(child, className)
+                let customType: CustomType = getFiledToFreezedFormat(child,key, className)
                 console.log(`freezedFieldFormat=> ${customType.toFreezedFieldFormat()}`)
                 customTypeManger.addCustomType(customType)
                 jsonObjectManger.setCustomTypeManger(parentKey, customTypeManger)
@@ -192,25 +192,25 @@ async function parseArray(arr: any[], parentKey: string = ""): Promise<string> {
 
 
 
-export function getFiledToFreezedFormat(jsonObj: any, fieldName: string, customClass: string = ''): CustomType {
+export function getFiledToFreezedFormat(jsonObj: any,fieldJsonKey: string, fieldName: string, customClass: string = ''): CustomType {
     const tsType = typeof jsonObj
     if (customClass !== '') {
-        return new CustomType(customClass, fieldName)
+        return new CustomType(fieldJsonKey , customClass, fieldName)
     }
     if (jsonObj === null) {
-        return new CustomType('dynamic', fieldName)
+        return new CustomType(fieldJsonKey,'dynamic', fieldName)
     }
     switch (tsType) {
         case 'string':
-            return new CustomType('String', fieldName)
+            return new CustomType(fieldJsonKey,'String', fieldName)
         case 'number':
             if (Number.isInteger(jsonObj)) {
-                return new CustomType('int', fieldName)
+                return new CustomType(fieldJsonKey,'int', fieldName)
             } else {
-                return new CustomType('double', fieldName)
+                return new CustomType(fieldJsonKey,'double', fieldName)
             }
         case 'boolean':
-            return new CustomType('bool', fieldName)
+            return new CustomType(fieldJsonKey,'bool', fieldName)
 
         default:
             throw new Error(`Unknow type: ${tsType}`)
@@ -219,7 +219,7 @@ export function getFiledToFreezedFormat(jsonObj: any, fieldName: string, customC
 
 
 
-function arrayPramsFmt(jsonObject: any | undefined, parentName: string, customType: string = ''): CustomType {
+function arrayPramsFmt( fieldJsonKey: string,jsonObject: any | undefined, parentName: string, customType: string = ''): CustomType {
     let hasCustomName = customType !== ''
     let keys = Object.keys(jsonObject);
     let typeString = 'dynamic';
@@ -247,5 +247,5 @@ function arrayPramsFmt(jsonObject: any | undefined, parentName: string, customTy
             }
             break;
     }
-    return new CustomType(typeString, parentName, true)
+    return new CustomType(fieldJsonKey ,typeString, parentName, true)
 }

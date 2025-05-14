@@ -26,13 +26,14 @@ export function toFreezedArrayFieldFormat(dartType: string, fieldName: string): 
     }
 }
 
-export function toFreezedFieldFormat(dartType: string, fieldName: string,customType:boolean): string {
-    let jsonKey = fieldName;
+export function toFreezedFieldFormat( fieldJsonKey: string, dartType: string, fieldName: string,customType:boolean): string {
+    let jsonKey = fieldJsonKey;
+    
    
     if (!['int', 'double', 'dynamic', 'bool'].includes(dartType)&&!customType) {
         dartType = toUpperCamelCase(dartType)
     }
-    fieldName = toLowerCamelCase(fieldName)
+    fieldName = toLowerCamelCase(fieldJsonKey)
     let defaultVal = setFreezedDefault(dartType);
     let fDefault = defaultVal ? `@Default(${defaultVal})` : '';
     if(customType){
