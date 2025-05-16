@@ -221,8 +221,8 @@ async function parseArray(arr: any[], parentKey: string = "", jsonFileKey = ""):
         // 取得該解析結果的自訂型別管理器
         let cacheManger = jsonObjectManger.getCustomTypeManger(t)
         // 遍歷管理器內的自訂型別列表，標記 uniqueKeys 的欄位為 nullable
-        cacheManger?.customTypeList.map((c)=>{
-            if(uniqueKeys.includes(c.jsonFileKey)){
+        cacheManger?.customTypeList.map((c) => {
+            if (uniqueKeys.includes(c.jsonFileKey)) {
                 c.nullAble = true
             }
         })
@@ -308,29 +308,43 @@ function arrayPramsFmt(fieldJsonKey: string, jsonObject: any | undefined, parent
     let hasCustomName = customType !== ''
     let keys = Object.keys(jsonObject);
     let typeString = 'dynamic';
+    let lastType = ""
+    for (const item of jsonObject) {
+        const value = item;
+        let currentType = typeof value;
 
+        let currentTypeString = 'dynamic';
+        switch (currentType) {
+            case 'string':
+                currentTypeString = 'String';
+                break;
+            case 'number':
+                currentTypeString = Number.isInteger(value) ? 'int' : 'double';
+                break;
+            case 'boolean':
+                currentTypeString = 'bool';
+                break;
+            case 'object':
+                if (value === null) {
+                    currentTypeString = 'dynamic';
+                } else {
+                    currentTypeString = customType !== '' ? customType : 'dynamic';
+                }
+                break;
+            default:
+                currentTypeString = 'dynamic';
+                break;
+        }
 
-    let firstChild = jsonObject[keys[0]]
-    let type = typeof firstChild
-    switch (type) {
-        case 'string':
-            typeString = 'String';
+        // 若與前一筆型別不同，設為 dynamic
+        if (lastType && currentTypeString !== lastType) {
+            typeString = 'dynamic';
             break;
-        case 'number':
-            if (Number.isInteger(firstChild)) {
-                typeString = 'int';
-            } else {
-                typeString = 'double';
-            }
-            break;
-        case 'boolean':
-            typeString = 'bool';
-            break;
-        case 'object':
-            if (customType !== '') {
-                typeString = customType
-            }
-            break;
+        }
+
+        lastType = currentTypeString;
+        typeString = currentTypeString;
     }
+
     return new CustomType(fieldJsonKey, typeString, parentName, true)
 }
