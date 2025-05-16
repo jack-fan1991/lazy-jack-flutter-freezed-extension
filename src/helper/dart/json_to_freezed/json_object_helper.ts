@@ -1,5 +1,5 @@
 import { toUpperCamelCase } from "../../../utils/src/regex/regex_utils";
-import { freezedClassTemplate, freezedWrapperClassTemplate, toFreezedArrayFieldFormat, toFreezedFieldFormat } from "./freezed_template";
+import { freezedClassTemplate, freezedJsonMapListClassTemplate, freezedWrapperClassTemplate, toFreezedArrayFieldFormat, toFreezedFieldFormat } from "./freezed_template";
 
 export class JsonObjectManger {
     freezedFieldsCache: Map<string, CustomTypeManger> = new Map();
@@ -14,7 +14,7 @@ export class JsonObjectManger {
         this.freezedFieldsCache.set(key, value)
     }
 
-    getFreezedFields(key: string): string[] | undefined {
+    getFreezedFieldsAsString(key: string): string[] | undefined {
         return this.freezedFieldsCache.get(key)?.customTypeList.map((item) => item.toFreezedFieldFormat())
     }
 
@@ -34,7 +34,7 @@ export class JsonObjectManger {
         for (const className of this.classWrapper.keys()) {
             let value = this.classWrapper.get(className)
             if (value != null) {
-                let template = freezedWrapperClassTemplate(className, [value.toFreezedFieldFormat()], value.fieldType)
+                let template = freezedWrapperClassTemplate(className, [value.toFreezedFieldFormat()], value.dartTypeName)
                 this.freezedTemplateList.push(template)
             }
         }
@@ -44,20 +44,37 @@ export class JsonObjectManger {
     toFreezedTemplate(mainClass: string): string {
         this.parsWrapper()
         let result = ''
-        let mainFreezedFields = this.getFreezedFields(mainClass) ?? []
-        let subClass = this.getCustomTypeManger(mainClass)?.customTypeList.map((customType) => customType.fieldName) ?? []
+        let mainFreezedFields = this.getFreezedFieldsAsString(mainClass) ?? []
+        let manger = this.getCustomTypeManger(mainClass)
+        let subClass = manger?.customTypeList.map((customType) => customType.fieldName) ?? []
         if (mainFreezedFields.length == 0) {
             throw new Error(`mainClass: ${mainClass} not found`)
         }
         let mainClassTemplate = freezedClassTemplate(mainClass, mainFreezedFields)
         /// 避免重複
         if (subClass.filter((sub) => toUpperCamelCase(sub) === mainClass).length == 0) {
+            /// If subClass has name "jsonMap"
+            // if (manger?.isDartJsonMapList()) {
+            //     let memberName = manger.getDartJsonMapListMemberName()
+            //     mainClassTemplate = freezedJsonMapListClassTemplate(mainClass,memberName)
+            //     this.freezedTemplateList.push(mainClassTemplate)
+            //     return this.freezedTemplateList.join('\r\n\n')
+            // } else {
+            //     this.freezedTemplateList.push(mainClassTemplate)
+            // }
             this.freezedTemplateList.push(mainClassTemplate)
+
         }
+
         for (let className of subClass) {
             let customTypeManger = this.getCustomTypeManger(className)
             if (customTypeManger != null) {
-                this.toFreezedTemplate(className)
+                if (subClass.length == 1) {
+                    this.toFreezedTemplate(className)
+                } else {
+                    this.toFreezedTemplate(className)
+                }
+
 
             }
         }
@@ -74,13 +91,13 @@ export class CustomTypeManger {
             return
         }
         // 
-        if (this.customTypeList.filter((t) => t.fieldName === customType.fieldName).length > 0) {
+        if (customType.dartTypeName != "jsonMap" && this.customTypeList.filter((t) => t.fieldName === customType.fieldName).length > 0) {
             for (let t of this.customTypeList) {
                 if (customType.fieldName === t.fieldName) {
-                    if (customType.fieldType == t.fieldType) {
+                    if (customType.dartTypeName == t.dartTypeName) {
                         return
                     }
-                    if (t.fieldType == 'dynamic') {
+                    if (t.dartTypeName == 'dynamic') {
                         let idx = this.customTypeList.indexOf(t)
                         this.customTypeList[idx] = customType
                     }
@@ -91,24 +108,45 @@ export class CustomTypeManger {
         }
     }
 
+    isNullAbleFieldName(jsonFieldName: string): boolean {
+        if (this.customTypeList.length == 0) {
+            return false
+        }
+        return this.customTypeList.filter((t) => toUpperCamelCase(t.jsonFileKey) === toUpperCamelCase(jsonFieldName)).length == 0
+    }
+
+    isDartJsonMapList(): boolean {
+        return this.customTypeList.filter((t) => toUpperCamelCase(t.fieldName) === toUpperCamelCase("jsonMap")).length > 0
+    }
+
+    getDartJsonMapListMemberName() {
+        return this.customTypeList.filter((t) => toUpperCamelCase(t.fieldName) === toUpperCamelCase("jsonMap"))[0].jsonFileKey
+    }
+
 }
 
 export class CustomType {
-    fieldJsonKey: string;
-    fieldType: string;
+    jsonFileKey: string;
+    dartTypeName: string;
     fieldName: string;
     isArray: boolean;
     // 強制使用fieldType
-    customType:boolean;
-    constructor(fieldJsonKey:string, fieldType: any, fieldName: string, isArray: boolean = false, customType:boolean = false) {
-        this.fieldJsonKey = fieldJsonKey;
-        this.fieldType = fieldType;
+    customType: boolean;
+    nullAble: boolean;
+    // 先棄用
+    useJsonMap: boolean;
+    constructor(fieldJsonKey: string, dartTypeName: string, fieldName: string, isArray: boolean = false, customType: boolean = false, useJsonMap: boolean = false, nullAble = false) {
+        this.jsonFileKey = fieldJsonKey;
+        this.dartTypeName = dartTypeName;
         this.fieldName = fieldName;
         this.isArray = isArray;
         this.customType = customType;
+        // 先棄用
+        this.useJsonMap = useJsonMap;
+        this.nullAble = nullAble
     }
     toFreezedFieldFormat(): string {
-        return this.isArray ? toFreezedArrayFieldFormat(this.fieldType, this.fieldName) : toFreezedFieldFormat(this.fieldJsonKey ,this.fieldType, this.fieldName, this.customType)
+        return this.isArray ? toFreezedArrayFieldFormat(this.jsonFileKey, this.dartTypeName, this.fieldName) : toFreezedFieldFormat(this.jsonFileKey, this.dartTypeName, this.fieldName, this.customType, this.nullAble)
     }
 }
 

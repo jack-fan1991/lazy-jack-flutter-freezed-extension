@@ -81,12 +81,13 @@ export async function freezedGenerator(costumerClass: string | undefined = undef
 }
 
 
-async function parse(jsonObject: any, parentKey: string = "", objInArray: boolean = false): Promise<string> {
+async function parse(jsonObject: any, parentKey: string = "", isArrayObj: boolean = false, sameStructureArray = false, jsonFileKey = ""): Promise<string> {
     let baseFileName = getActivateEditorFileName()
     baseFileName = toUpperCamelCase(baseFileName);
+    console.log(`parse ${parentKey} `)
     try {
         if (Array.isArray(jsonObject)) {
-            let arrayObjType = await parseArray(jsonObject, parentKey)
+            let arrayObjType = await parseArray(jsonObject, parentKey, jsonFileKey)
             if (parentKey === baseFileName) {
                 // no key Array
                 let wrapperClassName = baseFileName + "Wrapper";
@@ -98,13 +99,13 @@ async function parse(jsonObject: any, parentKey: string = "", objInArray: boolea
                         return wrapperClassName
                     }
                 })
-                let wrapper = new CustomType(arrayObjType,arrayObjType, arrayObjType, true)
+                let wrapper = new CustomType(arrayObjType, arrayObjType, arrayObjType, true)
                 console.log(`Add wrapper ${wrapper.toFreezedFieldFormat()}`)
                 jsonObjectManger.classWrapper.set(wrapperClassName, wrapper)
             }
             return arrayObjType;
         } else if (typeof jsonObject === 'object' && jsonObject !== null) {
-            return await parseObjectToFreezedFormat(jsonObject, parentKey);
+            return await parseObjectToFreezedFormat(jsonObject, parentKey, isArrayObj, sameStructureArray, jsonFileKey);
         } else {
             return typeof jsonObject;
         }
@@ -117,12 +118,14 @@ async function parse(jsonObject: any, parentKey: string = "", objInArray: boolea
 
 
 
-async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Promise<string> {
+async function parseObjectToFreezedFormat(obj: any, parentKey: string = '', isArrayObj: boolean = false, sameStructureArray = false, jsonFileKey = ""): Promise<string> {
     let childCount = Object.keys(obj).length
+    console.log(`parse ${parentKey} `)
+    // 使用List<Map<String,dynamic>>
 
     for (const key in obj) {
         // console.log(`key: ${key}`)
-        let className = parentKey+ toUpperCamelCase(key)
+        let className = parentKey + toUpperCamelCase(key)
         if (obj.hasOwnProperty(key)) {
             let child = obj[key]
             let childType = typeof child
@@ -137,7 +140,7 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
                 let customType: CustomType;
                 // 最後結點為[]
                 if (Array.isArray(child)) {
-                    customType = arrayPramsFmt( key,child, className, className)
+                    customType = arrayPramsFmt(key, child, className, className)
                     console.log(`[]型態 : parentKey ${parentKey}, className : ${className}`)
                 }
                 //最後結點為{}
@@ -150,7 +153,7 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
                 // }
                 // 最後結點為基礎型態
                 else {
-                    customType = getFiledToFreezedFormat(child, key,className, className)
+                    customType = getFiledToFreezedFormat(child, key, className, className)
                     console.log(`基礎型態:${parentKey}, 屬性 : ${className}`)
                 }
 
@@ -159,7 +162,7 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
                 customTypeManger.addCustomType(customType)
                 jsonObjectManger.setCustomTypeManger(parentKey, customTypeManger)
                 // jsonObjectManger.printCache()
-                await parse(child, className)
+                await parse(child, className, isArrayObj, sameStructureArray, key)
 
                 // console.log(`freezedFieldFormat: ${freezedFieldFormat}`)
                 // console.log(`freezedField: ${freezedFields}`)
@@ -167,50 +170,132 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = ''): Pro
                 // classCollection.push(template)
             } else {
                 // 單純的
-                let customTypeManger: CustomTypeManger = jsonObjectManger.getCustomTypeManger(parentKey) ?? new CustomTypeManger();
-                let customType: CustomType = getFiledToFreezedFormat(child,key, className)
+                let cacheManger = jsonObjectManger.getCustomTypeManger(parentKey)
+                let customTypeManger: CustomTypeManger = cacheManger ?? new CustomTypeManger();
+                let customType: CustomType
+                // if (isArrayObj && !sameStructureArray) {
+                //     customType = new CustomType(jsonFileKey,"jsonMap","jsonMap",false,false,true)
+                // }
+                // else {
+                //     customType = getFiledToFreezedFormat(child, key, className)
+                // }
+
+                customType = getFiledToFreezedFormat(child, key, className)
                 console.log(`freezedFieldFormat=> ${customType.toFreezedFieldFormat()}`)
                 customTypeManger.addCustomType(customType)
                 jsonObjectManger.setCustomTypeManger(parentKey, customTypeManger)
                 // jsonObjectManger.printCache()
             }
         }
+
     }
     return parentKey;
 }
 
-// 解析 JSON 陣列的類型，回傳包含每個元素的類型的字串陣列
-async function parseArray(arr: any[], parentKey: string = ""): Promise<string> {
+/**
+ * 對陣列中的每個物件進行解析，並根據欄位出現狀況設定 nullable 屬性。
+ * 
+ * 流程說明：
+ * 1. 使用 collectUniqueKeys 找出在陣列中只出現一次的欄位（uniqueKeys）。
+ * 2. 判斷陣列中所有物件的 key 和 value 型別是否一致（sameKeys）。
+ * 3. 逐筆物件呼叫 parse 函式進行解析，傳入是否要標記同型欄位。
+ * 4. 解析結果（t）會取得對應的自訂型別管理器（cacheManger）。
+ * 5. 對該管理器的 customTypeList 逐一檢查，如果欄位 jsonFileKey 在 uniqueKeys 中，將其 nullable 設為 true。
+ * 6. 將解析結果 t 累積到 type 陣列。
+ * 7. 最後回傳第一筆解析結果的型別字串。
+ * 
+ * @param arr 要解析的物件陣列
+ * @param parentKey 用於追蹤遞迴層級的父 key，預設為空字串
+ * @param jsonFileKey 用於辨識 json 檔案中的 key，預設為空字串
+ * @returns 回傳第一筆物件解析後的型別字串
+ */
+async function parseArray(arr: any[], parentKey: string = "", jsonFileKey = ""): Promise<string> {
     let type: string[] = []
+    // 找出在整個陣列中只出現一次的 key（unique keys）
+    let uniqueKeys = collectUniqueKeys(arr)
+    // 判斷陣列中所有物件的 key 與 value 型態是否完全相同
+    const sameKeys = allKeyAndValueTypesEqual(arr)
     for (const item of arr) {
-        let t = await parse(item, parentKey, true)
+        // 解析單一物件，並帶入是否同型 key 的標記
+        let t = await parse(item, parentKey, true, sameKeys, jsonFileKey)
+        // 取得該解析結果的自訂型別管理器
+        let cacheManger = jsonObjectManger.getCustomTypeManger(t)
+        // 遍歷管理器內的自訂型別列表，標記 uniqueKeys 的欄位為 nullable
+        cacheManger?.customTypeList.map((c)=>{
+            if(uniqueKeys.includes(c.jsonFileKey)){
+                c.nullAble = true
+            }
+        })
         type.push(t)
     }
     return type[0]
 }
+/**
+ * 收集物件陣列中只出現一次的欄位名稱（unique keys）。
+ * 
+ * 演算法邏輯：遍歷陣列中每個物件的 key，
+ * 1. 若 key 不在集合中，加入集合
+ * 2. 若 key 已存在集合中，從集合中移除（代表重複出現）
+ * 
+ * 最後回傳只出現過一次的 key 陣列。
+ * 
+ * @param records 欲檢查的物件陣列
+ * @returns 只出現一次的 key 陣列
+ */
+function collectUniqueKeys(records: Record<string, any>[]): string[] {
+    // 用 Set 紀錄目前遇到且只出現過一次的 key
+    const uniqueKeySet = new Set<string>();
 
+    for (const record of records) {
+        for (const key of Object.keys(record)) {
+            if (uniqueKeySet.has(key)) {
+                // 已存在代表第二次出現，從集合中移除（表示不唯一）
+                uniqueKeySet.delete(key);
+            } else {
+                // 第一次出現，加入集合
+                uniqueKeySet.add(key);
+            }
+        }
+    }
 
+    // 將 Set 轉為陣列回傳
+    return Array.from(uniqueKeySet);
+}
+function getKeyTypeSignature(item: any): string {
+    return Object.entries(item)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) => `${key}:${typeof value}`)
+        .join(",");
+}
 
+function allKeyAndValueTypesEqual(arr: any[]): boolean {
+    const set = new Set<string>();
+    for (const item of arr) {
+        const signature = getKeyTypeSignature(item);
+        set.add(signature);
+    }
+    return set.size === 1;
+}
 
-export function getFiledToFreezedFormat(jsonObj: any,fieldJsonKey: string, fieldName: string, customClass: string = ''): CustomType {
+export function getFiledToFreezedFormat(jsonObj: any, fieldJsonKey: string, fieldName: string, customClass: string = ''): CustomType {
     const tsType = typeof jsonObj
     if (customClass !== '') {
-        return new CustomType(fieldJsonKey , customClass, fieldName)
+        return new CustomType(fieldJsonKey, customClass, fieldName)
     }
     if (jsonObj === null) {
-        return new CustomType(fieldJsonKey,'dynamic', fieldName)
+        return new CustomType(fieldJsonKey, 'dynamic', fieldName)
     }
     switch (tsType) {
         case 'string':
-            return new CustomType(fieldJsonKey,'String', fieldName)
+            return new CustomType(fieldJsonKey, 'String', fieldName)
         case 'number':
             if (Number.isInteger(jsonObj)) {
-                return new CustomType(fieldJsonKey,'int', fieldName)
+                return new CustomType(fieldJsonKey, 'int', fieldName)
             } else {
-                return new CustomType(fieldJsonKey,'double', fieldName)
+                return new CustomType(fieldJsonKey, 'double', fieldName)
             }
         case 'boolean':
-            return new CustomType(fieldJsonKey,'bool', fieldName)
+            return new CustomType(fieldJsonKey, 'bool', fieldName)
 
         default:
             throw new Error(`Unknow type: ${tsType}`)
@@ -219,7 +304,7 @@ export function getFiledToFreezedFormat(jsonObj: any,fieldJsonKey: string, field
 
 
 
-function arrayPramsFmt( fieldJsonKey: string,jsonObject: any | undefined, parentName: string, customType: string = ''): CustomType {
+function arrayPramsFmt(fieldJsonKey: string, jsonObject: any | undefined, parentName: string, customType: string = ''): CustomType {
     let hasCustomName = customType !== ''
     let keys = Object.keys(jsonObject);
     let typeString = 'dynamic';
@@ -247,5 +332,5 @@ function arrayPramsFmt( fieldJsonKey: string,jsonObject: any | undefined, parent
             }
             break;
     }
-    return new CustomType(fieldJsonKey ,typeString, parentName, true)
+    return new CustomType(fieldJsonKey, typeString, parentName, true)
 }
