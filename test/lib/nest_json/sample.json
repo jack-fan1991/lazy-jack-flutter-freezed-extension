@@ -1,0 +1,74 @@
+{
+    "data": {
+        "post": {
+            "title": "Post 1",
+            "author": {
+                "data": {
+                    "id": "u1",
+                    "name": "Jack"
+                }
+            },
+            "comments": {
+                "data": [
+                    {
+                        "content": "Good post"
+                    },
+                    {
+                        "content": "Thanks!"
+                    }
+                ]
+            },
+            "commentsDiff": {
+                "data": [
+                    {
+                        "status": "1",
+                        "content": "Good post"
+                    },
+                    {
+                        "status": "2",
+                        "contentDiff": "Thanks!"
+                    }
+                ]
+            },
+            "commentsTags": {
+                "data": [
+                    "flutter",
+                    "dart",
+                    "freezed"
+                ]
+            },
+            "commentsValues": {
+                "data": [
+                    42,
+                    "text",
+                    true
+                ]
+            },
+            "commentsObj": {
+                "data": [
+                    {
+                        "content": "Good post",
+                        "author": "User1"
+                    },
+                    {
+                        "content": "Thanks!",
+                        "author": "User2"
+                    }
+                ]
+            },
+            "commentsMultiObj": {
+                "data": [
+                    {
+                        "type": "text",
+                        "content": "Hello"
+                    },
+                    {
+                        "type": "image",
+                        "url": "https://example.com/img.jpg",
+                        "width": 100
+                    }
+                ]
+            }
+        }
+    }
+}

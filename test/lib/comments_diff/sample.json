@@ -1,0 +1,14 @@
+{
+    "commentsDiff": {
+        "data": [
+            {
+                "status": "1",
+                "content": "Good post"
+            },
+            {
+                "status": "2",
+                "contentDiff": "Thanks!"
+            }
+        ]
+    }
+}

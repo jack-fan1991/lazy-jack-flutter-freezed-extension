@@ -12,12 +12,12 @@ function freezedToJsonMethod(className: string): string {
 }
 
 
-export function toFreezedArrayFieldFormat(dartType: string, fieldName: string): string {
-    let jsonKey = fieldName;
+export function toFreezedArrayFieldFormat( fieldJsonKey: string,dartType: string, fieldName: string): string {
+    let jsonKey = fieldJsonKey;
     if (!['int', 'double', 'dynamic', 'bool'].includes(dartType)) {
         dartType = toUpperCamelCase(dartType)
     }
-    fieldName = toLowerCamelCase(fieldName)
+    fieldName = toLowerCamelCase(fieldJsonKey)
     let prefix = dartType === 'dynamic' ? "// Parse Null value as dynamic\n\t\t" : ''
     if (isLowerCamelCase(fieldName)) {
         return `${prefix}@Default([]) final List<${dartType}> ${fieldName}`;
@@ -26,13 +26,14 @@ export function toFreezedArrayFieldFormat(dartType: string, fieldName: string): 
     }
 }
 
-export function toFreezedFieldFormat(dartType: string, fieldName: string,customType:boolean): string {
-    let jsonKey = fieldName;
+export function toFreezedFieldFormat( fieldJsonKey: string, dartType: string, fieldName: string,customType:boolean, nullAble: boolean): string {
+    let jsonKey = fieldJsonKey;
+    
    
     if (!['int', 'double', 'dynamic', 'bool'].includes(dartType)&&!customType) {
         dartType = toUpperCamelCase(dartType)
     }
-    fieldName = toLowerCamelCase(fieldName)
+    fieldName = toLowerCamelCase(fieldJsonKey)
     let defaultVal = setFreezedDefault(dartType);
     let fDefault = defaultVal ? `@Default(${defaultVal})` : '';
     if(customType){
@@ -41,12 +42,17 @@ export function toFreezedFieldFormat(dartType: string, fieldName: string,customT
     }
     let prefix = dartType === 'dynamic' ? "// Parse Null value as dynamic\n\t\t" : ''
     dartType=  defaultVal ? `final ${dartType}`  :`required final ${dartType}`;
+    if(nullAble){
+        dartType =dartType+"?"
+    }
     if (isLowerCamelCase(jsonKey)) {
         return `${prefix} ${fDefault} ${dartType} ${fieldName}`;
     } else {
         return `${prefix} ${fDefault} @JsonKey(name: '${jsonKey}')\t${dartType} ${fieldName}`;
     }
 }
+
+
 
 export function setFreezedDefault(dartType: string): string|undefined {
    if (dartType === 'int') {
@@ -75,12 +81,29 @@ class ${className} with _$${className} {
 \t}) = _${className};
 \t${fromJsonMethod}
 }`
-    if (isPlural(className) && !className.endsWith('ss')) {
-        clz = `/// ignore Verify plural type naming confusion\n${clz}`;
-    }
+    // if (isPlural(className) && !className.endsWith('ss')) {
+    //     clz = `/// ignore Verify plural type naming confusion\n${clz}`;
+    // }
     return clz
 }
 
+
+/// 這裡的 params 要轉成 dart  的格式 =>[final String? name]
+export function freezedJsonMapListClassTemplate(className: string, memberName: string): string {
+  className = toUpperCamelCase(className);
+  const fromJsonMethod = freezedFromJsonMethod(className);
+
+  let clz = `@freezed
+class ${className} with _\$${className} {
+  const ${className}._();
+  const factory ${className}({
+    List<Map<String, dynamic>> ${memberName},
+  }) = _${className};
+  
+  ${fromJsonMethod}
+}`;
+  return clz;
+}
 
 /// 這裡的 params 要轉成 dart  的格式 =>[final String? name]
 export function freezedWrapperClassTemplate(className: string, fields: string[], protoType: string): string {
@@ -93,9 +116,9 @@ class ${className} with _$${className} {
 \t}) = _${className};
 \t${fromJsonMethod}
 }`
-    if (isPlural(className) && !className.endsWith('ss')) {
-        clz = `/// ignore Verify plural type naming confusion\n${clz}`;
-    }
+    // if (isPlural(className) && !className.endsWith('ss')) {
+    //     clz = `/// ignore Verify plural type naming confusion\n${clz}`;
+    // }
     return clz
 }
 
