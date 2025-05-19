@@ -21,7 +21,7 @@ CommentsResp _$CommentsRespFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CommentsResp {
-  CommentsRespComments get comments => throw _privateConstructorUsedError;
+  Comments get comments => throw _privateConstructorUsedError;
 
   /// Serializes this CommentsResp to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,9 +40,9 @@ abstract class $CommentsRespCopyWith<$Res> {
     $Res Function(CommentsResp) then,
   ) = _$CommentsRespCopyWithImpl<$Res, CommentsResp>;
   @useResult
-  $Res call({CommentsRespComments comments});
+  $Res call({Comments comments});
 
-  $CommentsRespCommentsCopyWith<$Res> get comments;
+  $CommentsCopyWith<$Res> get comments;
 }
 
 /// @nodoc
@@ -66,7 +66,7 @@ class _$CommentsRespCopyWithImpl<$Res, $Val extends CommentsResp>
                 null == comments
                     ? _value.comments
                     : comments // ignore: cast_nullable_to_non_nullable
-                        as CommentsRespComments,
+                        as Comments,
           )
           as $Val,
     );
@@ -76,8 +76,8 @@ class _$CommentsRespCopyWithImpl<$Res, $Val extends CommentsResp>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $CommentsRespCommentsCopyWith<$Res> get comments {
-    return $CommentsRespCommentsCopyWith<$Res>(_value.comments, (value) {
+  $CommentsCopyWith<$Res> get comments {
+    return $CommentsCopyWith<$Res>(_value.comments, (value) {
       return _then(_value.copyWith(comments: value) as $Val);
     });
   }
@@ -92,10 +92,10 @@ abstract class _$$CommentsRespImplCopyWith<$Res>
   ) = __$$CommentsRespImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({CommentsRespComments comments});
+  $Res call({Comments comments});
 
   @override
-  $CommentsRespCommentsCopyWith<$Res> get comments;
+  $CommentsCopyWith<$Res> get comments;
 }
 
 /// @nodoc
@@ -118,7 +118,7 @@ class __$$CommentsRespImplCopyWithImpl<$Res>
             null == comments
                 ? _value.comments
                 : comments // ignore: cast_nullable_to_non_nullable
-                    as CommentsRespComments,
+                    as Comments,
       ),
     );
   }
@@ -133,7 +133,7 @@ class _$CommentsRespImpl extends _CommentsResp {
       _$$CommentsRespImplFromJson(json);
 
   @override
-  final CommentsRespComments comments;
+  final Comments comments;
 
   @override
   String toString() {
@@ -168,7 +168,7 @@ class _$CommentsRespImpl extends _CommentsResp {
 }
 
 abstract class _CommentsResp extends CommentsResp {
-  const factory _CommentsResp({required final CommentsRespComments comments}) =
+  const factory _CommentsResp({required final Comments comments}) =
       _$CommentsRespImpl;
   const _CommentsResp._() : super._();
 
@@ -176,7 +176,7 @@ abstract class _CommentsResp extends CommentsResp {
       _$CommentsRespImpl.fromJson;
 
   @override
-  CommentsRespComments get comments;
+  Comments get comments;
 
   /// Create a copy of CommentsResp
   /// with the given fields replaced by the non-null parameter values.
@@ -186,48 +186,43 @@ abstract class _CommentsResp extends CommentsResp {
       throw _privateConstructorUsedError;
 }
 
-CommentsRespComments _$CommentsRespCommentsFromJson(Map<String, dynamic> json) {
-  return _CommentsRespComments.fromJson(json);
+Comments _$CommentsFromJson(Map<String, dynamic> json) {
+  return _Comments.fromJson(json);
 }
 
 /// @nodoc
-mixin _$CommentsRespComments {
-  List<CommentsRespCommentsData> get data => throw _privateConstructorUsedError;
+mixin _$Comments {
+  List<Data> get data => throw _privateConstructorUsedError;
 
-  /// Serializes this CommentsRespComments to a JSON map.
+  /// Serializes this Comments to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of CommentsRespComments
+  /// Create a copy of Comments
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $CommentsRespCommentsCopyWith<CommentsRespComments> get copyWith =>
+  $CommentsCopyWith<Comments> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $CommentsRespCommentsCopyWith<$Res> {
-  factory $CommentsRespCommentsCopyWith(
-    CommentsRespComments value,
-    $Res Function(CommentsRespComments) then,
-  ) = _$CommentsRespCommentsCopyWithImpl<$Res, CommentsRespComments>;
+abstract class $CommentsCopyWith<$Res> {
+  factory $CommentsCopyWith(Comments value, $Res Function(Comments) then) =
+      _$CommentsCopyWithImpl<$Res, Comments>;
   @useResult
-  $Res call({List<CommentsRespCommentsData> data});
+  $Res call({List<Data> data});
 }
 
 /// @nodoc
-class _$CommentsRespCommentsCopyWithImpl<
-  $Res,
-  $Val extends CommentsRespComments
->
-    implements $CommentsRespCommentsCopyWith<$Res> {
-  _$CommentsRespCommentsCopyWithImpl(this._value, this._then);
+class _$CommentsCopyWithImpl<$Res, $Val extends Comments>
+    implements $CommentsCopyWith<$Res> {
+  _$CommentsCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of CommentsRespComments
+  /// Create a copy of Comments
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -238,7 +233,7 @@ class _$CommentsRespCommentsCopyWithImpl<
                 null == data
                     ? _value.data
                     : data // ignore: cast_nullable_to_non_nullable
-                        as List<CommentsRespCommentsData>,
+                        as List<Data>,
           )
           as $Val,
     );
@@ -246,38 +241,38 @@ class _$CommentsRespCommentsCopyWithImpl<
 }
 
 /// @nodoc
-abstract class _$$CommentsRespCommentsImplCopyWith<$Res>
-    implements $CommentsRespCommentsCopyWith<$Res> {
-  factory _$$CommentsRespCommentsImplCopyWith(
-    _$CommentsRespCommentsImpl value,
-    $Res Function(_$CommentsRespCommentsImpl) then,
-  ) = __$$CommentsRespCommentsImplCopyWithImpl<$Res>;
+abstract class _$$CommentsImplCopyWith<$Res>
+    implements $CommentsCopyWith<$Res> {
+  factory _$$CommentsImplCopyWith(
+    _$CommentsImpl value,
+    $Res Function(_$CommentsImpl) then,
+  ) = __$$CommentsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<CommentsRespCommentsData> data});
+  $Res call({List<Data> data});
 }
 
 /// @nodoc
-class __$$CommentsRespCommentsImplCopyWithImpl<$Res>
-    extends _$CommentsRespCommentsCopyWithImpl<$Res, _$CommentsRespCommentsImpl>
-    implements _$$CommentsRespCommentsImplCopyWith<$Res> {
-  __$$CommentsRespCommentsImplCopyWithImpl(
-    _$CommentsRespCommentsImpl _value,
-    $Res Function(_$CommentsRespCommentsImpl) _then,
+class __$$CommentsImplCopyWithImpl<$Res>
+    extends _$CommentsCopyWithImpl<$Res, _$CommentsImpl>
+    implements _$$CommentsImplCopyWith<$Res> {
+  __$$CommentsImplCopyWithImpl(
+    _$CommentsImpl _value,
+    $Res Function(_$CommentsImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of CommentsRespComments
+  /// Create a copy of Comments
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? data = null}) {
     return _then(
-      _$CommentsRespCommentsImpl(
+      _$CommentsImpl(
         data:
             null == data
                 ? _value._data
                 : data // ignore: cast_nullable_to_non_nullable
-                    as List<CommentsRespCommentsData>,
+                    as List<Data>,
       ),
     );
   }
@@ -285,19 +280,18 @@ class __$$CommentsRespCommentsImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$CommentsRespCommentsImpl extends _CommentsRespComments {
-  const _$CommentsRespCommentsImpl({
-    final List<CommentsRespCommentsData> data = const [],
-  }) : _data = data,
-       super._();
+class _$CommentsImpl extends _Comments {
+  const _$CommentsImpl({final List<Data> data = const []})
+    : _data = data,
+      super._();
 
-  factory _$CommentsRespCommentsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CommentsRespCommentsImplFromJson(json);
+  factory _$CommentsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CommentsImplFromJson(json);
 
-  final List<CommentsRespCommentsData> _data;
+  final List<Data> _data;
   @override
   @JsonKey()
-  List<CommentsRespCommentsData> get data {
+  List<Data> get data {
     if (_data is EqualUnmodifiableListView) return _data;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_data);
@@ -305,14 +299,14 @@ class _$CommentsRespCommentsImpl extends _CommentsRespComments {
 
   @override
   String toString() {
-    return 'CommentsRespComments(data: $data)';
+    return 'Comments(data: $data)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CommentsRespCommentsImpl &&
+            other is _$CommentsImpl &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
@@ -321,88 +315,74 @@ class _$CommentsRespCommentsImpl extends _CommentsRespComments {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  /// Create a copy of CommentsRespComments
+  /// Create a copy of Comments
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$CommentsRespCommentsImplCopyWith<_$CommentsRespCommentsImpl>
-  get copyWith =>
-      __$$CommentsRespCommentsImplCopyWithImpl<_$CommentsRespCommentsImpl>(
-        this,
-        _$identity,
-      );
+  _$$CommentsImplCopyWith<_$CommentsImpl> get copyWith =>
+      __$$CommentsImplCopyWithImpl<_$CommentsImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$CommentsRespCommentsImplToJson(this);
+    return _$$CommentsImplToJson(this);
   }
 }
 
-abstract class _CommentsRespComments extends CommentsRespComments {
-  const factory _CommentsRespComments({
-    final List<CommentsRespCommentsData> data,
-  }) = _$CommentsRespCommentsImpl;
-  const _CommentsRespComments._() : super._();
+abstract class _Comments extends Comments {
+  const factory _Comments({final List<Data> data}) = _$CommentsImpl;
+  const _Comments._() : super._();
 
-  factory _CommentsRespComments.fromJson(Map<String, dynamic> json) =
-      _$CommentsRespCommentsImpl.fromJson;
+  factory _Comments.fromJson(Map<String, dynamic> json) =
+      _$CommentsImpl.fromJson;
 
   @override
-  List<CommentsRespCommentsData> get data;
+  List<Data> get data;
 
-  /// Create a copy of CommentsRespComments
+  /// Create a copy of Comments
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CommentsRespCommentsImplCopyWith<_$CommentsRespCommentsImpl>
-  get copyWith => throw _privateConstructorUsedError;
-}
-
-CommentsRespCommentsData _$CommentsRespCommentsDataFromJson(
-  Map<String, dynamic> json,
-) {
-  return _CommentsRespCommentsData.fromJson(json);
-}
-
-/// @nodoc
-mixin _$CommentsRespCommentsData {
-  String get content => throw _privateConstructorUsedError;
-
-  /// Serializes this CommentsRespCommentsData to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of CommentsRespCommentsData
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CommentsRespCommentsDataCopyWith<CommentsRespCommentsData> get copyWith =>
+  _$$CommentsImplCopyWith<_$CommentsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
+Data _$DataFromJson(Map<String, dynamic> json) {
+  return _Data.fromJson(json);
+}
+
 /// @nodoc
-abstract class $CommentsRespCommentsDataCopyWith<$Res> {
-  factory $CommentsRespCommentsDataCopyWith(
-    CommentsRespCommentsData value,
-    $Res Function(CommentsRespCommentsData) then,
-  ) = _$CommentsRespCommentsDataCopyWithImpl<$Res, CommentsRespCommentsData>;
+mixin _$Data {
+  String get content => throw _privateConstructorUsedError;
+
+  /// Serializes this Data to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of Data
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $DataCopyWith<Data> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DataCopyWith<$Res> {
+  factory $DataCopyWith(Data value, $Res Function(Data) then) =
+      _$DataCopyWithImpl<$Res, Data>;
   @useResult
   $Res call({String content});
 }
 
 /// @nodoc
-class _$CommentsRespCommentsDataCopyWithImpl<
-  $Res,
-  $Val extends CommentsRespCommentsData
->
-    implements $CommentsRespCommentsDataCopyWith<$Res> {
-  _$CommentsRespCommentsDataCopyWithImpl(this._value, this._then);
+class _$DataCopyWithImpl<$Res, $Val extends Data>
+    implements $DataCopyWith<$Res> {
+  _$DataCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of CommentsRespCommentsData
+  /// Create a copy of Data
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -421,37 +401,30 @@ class _$CommentsRespCommentsDataCopyWithImpl<
 }
 
 /// @nodoc
-abstract class _$$CommentsRespCommentsDataImplCopyWith<$Res>
-    implements $CommentsRespCommentsDataCopyWith<$Res> {
-  factory _$$CommentsRespCommentsDataImplCopyWith(
-    _$CommentsRespCommentsDataImpl value,
-    $Res Function(_$CommentsRespCommentsDataImpl) then,
-  ) = __$$CommentsRespCommentsDataImplCopyWithImpl<$Res>;
+abstract class _$$DataImplCopyWith<$Res> implements $DataCopyWith<$Res> {
+  factory _$$DataImplCopyWith(
+    _$DataImpl value,
+    $Res Function(_$DataImpl) then,
+  ) = __$$DataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String content});
 }
 
 /// @nodoc
-class __$$CommentsRespCommentsDataImplCopyWithImpl<$Res>
-    extends
-        _$CommentsRespCommentsDataCopyWithImpl<
-          $Res,
-          _$CommentsRespCommentsDataImpl
-        >
-    implements _$$CommentsRespCommentsDataImplCopyWith<$Res> {
-  __$$CommentsRespCommentsDataImplCopyWithImpl(
-    _$CommentsRespCommentsDataImpl _value,
-    $Res Function(_$CommentsRespCommentsDataImpl) _then,
-  ) : super(_value, _then);
+class __$$DataImplCopyWithImpl<$Res>
+    extends _$DataCopyWithImpl<$Res, _$DataImpl>
+    implements _$$DataImplCopyWith<$Res> {
+  __$$DataImplCopyWithImpl(_$DataImpl _value, $Res Function(_$DataImpl) _then)
+    : super(_value, _then);
 
-  /// Create a copy of CommentsRespCommentsData
+  /// Create a copy of Data
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({Object? content = null}) {
     return _then(
-      _$CommentsRespCommentsDataImpl(
+      _$DataImpl(
         content:
             null == content
                 ? _value.content
@@ -464,11 +437,11 @@ class __$$CommentsRespCommentsDataImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$CommentsRespCommentsDataImpl extends _CommentsRespCommentsData {
-  const _$CommentsRespCommentsDataImpl({this.content = ''}) : super._();
+class _$DataImpl extends _Data {
+  const _$DataImpl({this.content = ''}) : super._();
 
-  factory _$CommentsRespCommentsDataImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CommentsRespCommentsDataImplFromJson(json);
+  factory _$DataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DataImplFromJson(json);
 
   @override
   @JsonKey()
@@ -476,14 +449,14 @@ class _$CommentsRespCommentsDataImpl extends _CommentsRespCommentsData {
 
   @override
   String toString() {
-    return 'CommentsRespCommentsData(content: $content)';
+    return 'Data(content: $content)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CommentsRespCommentsDataImpl &&
+            other is _$DataImpl &&
             (identical(other.content, content) || other.content == content));
   }
 
@@ -491,37 +464,33 @@ class _$CommentsRespCommentsDataImpl extends _CommentsRespCommentsData {
   @override
   int get hashCode => Object.hash(runtimeType, content);
 
-  /// Create a copy of CommentsRespCommentsData
+  /// Create a copy of Data
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$CommentsRespCommentsDataImplCopyWith<_$CommentsRespCommentsDataImpl>
-  get copyWith => __$$CommentsRespCommentsDataImplCopyWithImpl<
-    _$CommentsRespCommentsDataImpl
-  >(this, _$identity);
+  _$$DataImplCopyWith<_$DataImpl> get copyWith =>
+      __$$DataImplCopyWithImpl<_$DataImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$CommentsRespCommentsDataImplToJson(this);
+    return _$$DataImplToJson(this);
   }
 }
 
-abstract class _CommentsRespCommentsData extends CommentsRespCommentsData {
-  const factory _CommentsRespCommentsData({final String content}) =
-      _$CommentsRespCommentsDataImpl;
-  const _CommentsRespCommentsData._() : super._();
+abstract class _Data extends Data {
+  const factory _Data({final String content}) = _$DataImpl;
+  const _Data._() : super._();
 
-  factory _CommentsRespCommentsData.fromJson(Map<String, dynamic> json) =
-      _$CommentsRespCommentsDataImpl.fromJson;
+  factory _Data.fromJson(Map<String, dynamic> json) = _$DataImpl.fromJson;
 
   @override
   String get content;
 
-  /// Create a copy of CommentsRespCommentsData
+  /// Create a copy of Data
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CommentsRespCommentsDataImplCopyWith<_$CommentsRespCommentsDataImpl>
-  get copyWith => throw _privateConstructorUsedError;
+  _$$DataImplCopyWith<_$DataImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

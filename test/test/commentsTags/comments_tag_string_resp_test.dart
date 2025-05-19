@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
 
-import 'package:tt/commentsTags/string/comments_tag_string_resp.dart';
+import 'package:tt/comments_tags/string/comments_tag_string_resp.dart';
 
 void main() {
   group('CommentsTagStringResp', () {

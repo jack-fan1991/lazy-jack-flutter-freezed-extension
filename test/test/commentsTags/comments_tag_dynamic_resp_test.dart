@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
 
-import 'package:tt/commentsTags/dynamic/comments_tag_dynamic_resp.dart';
+import 'package:tt/comments_tags/dynamic/comments_tag_dynamic_resp.dart';
 
 void main() {
   group('CommentsTagDynamicResp', () {

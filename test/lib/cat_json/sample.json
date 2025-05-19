@@ -1,0 +1,163 @@
+{
+    "id": 15,
+    "name": "Beanie",
+    "slug": "beanie",
+    "permalink": "https://wp.ducafecat.tech/product/beanie/",
+    "date_created": "2022-03-31T23:19:37",
+    "date_created_gmt": "2022-03-31T15:19:37",
+    "date_modified": "2022-04-18T23:50:20",
+    "date_modified_gmt": "2022-04-18T15:50:20",
+    "type": "simple",
+    "status": "publish",
+    "featured": true,
+    "catalog_visibility": "visible",
+    "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+    "short_description": "<p>This is a simple product.</p>\n",
+    "sku": "woo-beanie",
+    "price": "18",
+    "regular_price": "20",
+    "sale_price": "18",
+    "date_on_sale_from": null,
+    "date_on_sale_from_gmt": null,
+    "date_on_sale_to": null,
+    "date_on_sale_to_gmt": null,
+    "on_sale": true,
+    "purchasable": true,
+    "total_sales": 0,
+    "virtual": false,
+    "downloadable": false,
+    "downloads": [],
+    "download_limit": 0,
+    "download_expiry": 0,
+    "external_url": "",
+    "button_text": "",
+    "tax_status": "taxable",
+    "tax_class": "",
+    "manage_stock": false,
+    "stock_quantity": null,
+    "backorders": "no",
+    "backorders_allowed": false,
+    "backordered": false,
+    "low_stock_amount": null,
+    "sold_individually": false,
+    "weight": "1",
+    "dimensions": {
+        "length": "12",
+        "width": "12",
+        "height": "3"
+    },
+    "shipping_required": true,
+    "shipping_taxable": true,
+    "shipping_class": "china_shipping",
+    "shipping_class_id": 41,
+    "reviews_allowed": true,
+    "average_rating": "0.00",
+    "rating_count": 0,
+    "upsell_ids": [],
+    "cross_sell_ids": [],
+    "parent_id": 0,
+    "purchase_note": "",
+    "categories": [
+        {
+            "id": 34,
+            "name": "Bag",
+            "slug": "bag"
+        },
+        {
+            "id": 29,
+            "name": "Man",
+            "slug": "man"
+        },
+        {
+            "id": 15,
+            "name": "More",
+            "slug": "more"
+        },
+        {
+            "id": 30,
+            "name": "Woman",
+            "slug": "woman"
+        }
+    ],
+    "tags": [
+        {
+            "id": 42,
+            "name": "beanie",
+            "slug": "beanie"
+        }
+    ],
+    "images": [
+        {
+            "id": 44,
+            "date_created": "2022-04-01T07:20:01",
+            "date_created_gmt": "2022-03-31T15:20:01",
+            "date_modified": "2022-04-01T07:20:01",
+            "date_modified_gmt": "2022-03-31T15:20:01",
+            "src": "https://ducafecat.oss-cn-beijing.aliyuncs.com/wp-content/uploads/2022/03/beanie-2.jpg",
+            "name": "beanie-2.jpg",
+            "alt": ""
+        }
+    ],
+    "attributes": [
+        {
+            "id": 1,
+            "name": "Color",
+            "position": 0,
+            "visible": true,
+            "variation": false,
+            "options": [
+                "Green",
+                "Purple"
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Size",
+            "position": 1,
+            "visible": true,
+            "variation": false,
+            "options": [
+                "XL",
+                "2XL",
+                "3XL"
+            ]
+        }
+    ],
+    "default_attributes": [],
+    "variations": [],
+    "grouped_products": [],
+    "menu_order": 0,
+    "price_html": "<del aria-hidden=\"true\"><span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&yen;</span>20.00</bdi></span></del> <ins><span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&yen;</span>18.00</bdi></span></ins>",
+    "related_ids": [
+        13,
+        12,
+        11,
+        14
+    ],
+    "meta_data": [
+        {
+            "id": 89,
+            "key": "_original_id",
+            "value": "48"
+        },
+        {
+            "id": 479,
+            "key": "_wpcom_is_markdown",
+            "value": "1"
+        }
+    ],
+    "stock_status": "instock",
+    "has_options": false,
+    "_links": {
+        "self": [
+            {
+                "href": "https://wp.ducafecat.tech/wp-json/wc/v3/products/15"
+            }
+        ],
+        "collection": [
+            {
+                "href": "https://wp.ducafecat.tech/wp-json/wc/v3/products"
+            }
+        ]
+    }
+}

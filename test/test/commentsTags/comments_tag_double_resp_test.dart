@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
 
-import 'package:tt/commentsTags/double/comments_tag_double_resp.dart';
+import 'package:tt/comments_tags/double/comments_tag_double_resp.dart';
 
 void main() {
   group('CommentsTagDoubleResp', () {
