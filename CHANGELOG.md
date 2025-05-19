@@ -1,3 +1,7 @@
+- 0.0.16
+- Support complex Json schema
+- see more ./test
+
 - 0.0.14
 - remove dart part fixer
 

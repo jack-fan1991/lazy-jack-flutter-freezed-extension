@@ -1,97 +1,37 @@
-# Feature 
+### Show for Freezed Classes
+Quick fixes will only be activated when a verified JSON string is selected.
 
-## Quickfix
+#### Available Actions:
+- **Add Hive Adapter**
+  - Only shown when the project includes the `hive` dependency.
+  - Converts the current Freezed class into a Hive-compatible structure.
+  - Searches for the last used `typeId` within the project.
+  - Automatically adds `Hive.registerAdapter()` in the appropriate location.
 
-  ### show when freezed class
-  * freezed sample
-  ``` java
-  @freezed
-class WidgetTest with _$WidgetTest {
-      const WidgetTest._();
-      const factory WidgetTest({
-        required final String test,
-      }) = _WidgetTest;
-      factory WidgetTest.fromJson(Map<String, dynamic> json) =>
-          _$WidgetTestFromJson(json);
-    }
+- **Add Union State**
+  - Adds support for union types in Freezed classes.
 
-  ```
-  * Action 
-    * Add hive Adapter
-      * show only use hive dependency
-      * convert current freezed to Hive structure
-      * search last Hive typeId in project
-      * auto open Hive.registerAdapter   
-    * Add Union state
+![Extension Quick Fix](./image/quickfix/extension_quickfix.png)
 
-  ![](./image/quickfix/extension_quickfix.png)
+---
+
+### JSON to Freezed
+Quick fixes will only be activated when a verified JSON string is selected.
+
+#### Features:
+- Auto-generates Dart models from JSON structures.
+- [See more json](./test/lib/complex_json/sample.json) 
+- [See more Generation](./test/lib/complex_json/complex_json.dart) 
+- **Quick fix**
+![JSON to Freezed](./image/quickfix/freezed/json_to_freezed.png)
+- **Nested JSON Support**
   
-  * Json to freezed quick fix
-    * Activate if json verify
-
-    ![](./image/quickfix/freezed/json_to_freezed.png)
-
-  * Convert to freezed Result
-    ```dart 
-    import 'package:freezed_annotation/freezed_annotation.dart';
-    part 'test_api.g.dart';
-    part 'test_api.freezed.dart';
-
-    @freezed
-    class TestApi with _$TestApi {
-      const TestApi._();
-      const factory TestApi({
-        final User? user,
-        final Location? location,
-        @Default([]) final List<String> devices,
-        @Default([]) final List<Devices2> devices2,
-      }) = _TestApi;
-      factory TestApi.fromJson(Map<String, dynamic> json) =>
-          _$TestApiFromJson(json);
-    }
-
-    @freezed
-    class Devices2 with _$Devices2 {
-      const Devices2._();
-      const factory Devices2({
-        final String? logo,
-      }) = _Devices2;
-      factory Devices2.fromJson(Map<String, dynamic> json) =>
-          _$Devices2FromJson(json);
-    }
-
-    @freezed
-    class Location with _$Location {
-      const Location._();
-      const factory Location({
-        final String? city,
-        final String? state,
-        final int? zipcode,
-      }) = _Location;
-      factory Location.fromJson(Map<String, dynamic> json) =>
-          _$LocationFromJson(json);
-    }
-
-    @freezed
-    class User with _$User {
-      const User._();
-      const factory User({
-        final Name? name,
-        final int? age,
-        final String? email,
-      }) = _User;
-      factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-    }
-
-    @freezed
-    class Name with _$Name {
-      const Name._();
-      const factory Name({
-        final String? first,
-        final String? last,
-      }) = _Name;
-      factory Name.fromJson(Map<String, dynamic> json) => _$NameFromJson(json);
-    }
+  - example file: `nest_json.dart`
 
 
-    ```
+![Nested JSON Snapshot](./image/quickfix/freezed/nest_json_snap.png)
+
+- **Freezed Model Generation**
+  - Automatically creates `@freezed`-based classes for nested JSON.
+
+![Freezed Model Snapshot](./image/quickfix/freezed/nest_json_freezed_snap.png)

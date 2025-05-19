@@ -32,10 +32,13 @@ function findOuterKeys(jsonString: string): string[] {
 
     return outerKeys;
 }
+let baseClassName = ""
+let keySet = new Set()
 
 export async function freezedGenerator(costumerClass: string | undefined = undefined) {
     jsonObjectManger = new JsonObjectManger()
     const editor = vscode.window.activeTextEditor;
+    keySet.clear()
     if (!editor)
         return;
     let selectedText = getSelectedText()
@@ -63,6 +66,7 @@ export async function freezedGenerator(costumerClass: string | undefined = undef
             }
         }
     }
+    baseClassName = className as string
     // 回傳最接近的[type,type,type]
     // type = string | number | boolean | object | array
     // 因為是第一層所以如果 object 則用 baseFileName 當作 class 名稱
@@ -125,10 +129,28 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = '', isAr
 
     for (const key in obj) {
         // console.log(`key: ${key}`)
-        let className = parentKey + toUpperCamelCase(key)
+        let className = ""
+        if (keySet.has(key) && !isArrayObj) {
+            className = parentKey + toUpperCamelCase(key)
+        } else {
+            className = toUpperCamelCase(key)
+        }
+        if (isArrayObj) {
+            className = parentKey + className
+        }
         if (obj.hasOwnProperty(key)) {
+            keySet.add(key)
             let child = obj[key]
             let childType = typeof child
+            console.log(`${key} 的值是 null`);
+            if (child === null) {
+                let customTypeManger: CustomTypeManger = jsonObjectManger.getCustomTypeManger(parentKey) ?? new CustomTypeManger();
+                let customType: CustomType;
+                customType = getFiledToFreezedFormat(child, key, className, className)
+                customTypeManger.addCustomType(customType)
+                jsonObjectManger.setCustomTypeManger(parentKey, customTypeManger)
+                continue;
+            }
             console.log(`解析 key : ${parentKey}, 生成物件 : ${className}, 物件類型 : ${childType} `)
             ///子子類別
             let childChild = child[Object.keys(child)[0]]
@@ -161,6 +183,7 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = '', isAr
                 console.log(`freezedFieldFormat: ${customType.toFreezedFieldFormat()}`)
                 customTypeManger.addCustomType(customType)
                 jsonObjectManger.setCustomTypeManger(parentKey, customTypeManger)
+
                 // jsonObjectManger.printCache()
                 await parse(child, className, isArrayObj, sameStructureArray, key)
 
@@ -179,7 +202,9 @@ async function parseObjectToFreezedFormat(obj: any, parentKey: string = '', isAr
                 // else {
                 //     customType = getFiledToFreezedFormat(child, key, className)
                 // }
-
+                if (isArrayObj) {
+                    className = parentKey + className
+                }
                 customType = getFiledToFreezedFormat(child, key, className)
                 console.log(`freezedFieldFormat=> ${customType.toFreezedFieldFormat()}`)
                 customTypeManger.addCustomType(customType)
@@ -279,12 +304,13 @@ function allKeyAndValueTypesEqual(arr: any[]): boolean {
 
 export function getFiledToFreezedFormat(jsonObj: any, fieldJsonKey: string, fieldName: string, customClass: string = ''): CustomType {
     const tsType = typeof jsonObj
-    if (customClass !== '') {
-        return new CustomType(fieldJsonKey, customClass, fieldName)
-    }
     if (jsonObj === null) {
         return new CustomType(fieldJsonKey, 'dynamic', fieldName)
     }
+    if (customClass !== '') {
+        return new CustomType(fieldJsonKey, customClass, fieldName)
+    }
+
     switch (tsType) {
         case 'string':
             return new CustomType(fieldJsonKey, 'String', fieldName)

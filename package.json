@@ -2,7 +2,7 @@
   "name": "lazy-jack-flutter-freezed",
   "displayName": "lazyJ flutter freezed extension",
   "description": "lets go",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "publisher": "jackFan",
   "icon": "image/lazy_man.png",
   "engines": {
@@ -50,7 +50,6 @@
     "type": "git",
     "url": "https://github.com/jack-fan1991/lazy-jack-flutter-extension"
   },
- 
   "dependencies": {
     "@types/node": "^18.15.11",
     "@types/vscode": "^1.77.0",
