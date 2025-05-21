@@ -35,10 +35,8 @@ export class JsonToFreezedFixer implements CodeActionProviderInterface<string> {
             const quickFixPart = this.createCommonAction(JsonToFreezedFixer.convertToFreezed,document, range, "Json To Freezed (base on file name) ");
     
             
-            const innerClassFixer = this.createCommonAction(JsonToFreezedFixer.innerClassFix,document, range, "Json to Freezed (inner class) ");
-            // 將所有程式碼動作打包成陣列，並回傳
+            const innerClassFixer = this.createCommonAction(JsonToFreezedFixer.innerClassFix,document, range, "Json to Freezed (Generate inner class or rename parent based on input key)");
             return [quickFixPart,innerClassFixer];
-            // 將所有程式碼動作打包成陣列，並回傳
             return [quickFixPart];
         } catch (e) {
             return []

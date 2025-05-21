@@ -4,7 +4,7 @@ import { runTerminal } from '../../../utils/src/terminal_utils/terminal_utils';
 import { getActivateEditorFileName, getSelectedText } from '../../../utils/src/vscode_utils/editor_utils';
 import { getActivateText } from '../../../utils/src/vscode_utils/activate_editor_utils';
 import { tryParseJson } from '../../../utils/src/json_utils/try_parse_json';
-import { Icon_Warning, logError } from '../../../utils/src/logger/logger';
+import { Icon_Warning, logError, showInfo, showWarning } from '../../../utils/src/logger/logger';
 import { toUpperCamelCase } from '../../../utils/src/regex/regex_utils';
 
 export const command_dart_json_to_freezed = "command_dart_json_to_freezed"
@@ -15,8 +15,10 @@ let jsonObjectManger = new JsonObjectManger()
 
 export function registerJsonToFreezed(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand(command_dart_json_to_freezed, async (className) => {
-        await freezedGenerator(className)
-        runTerminal('flutter pub run build_runner build --delete-conflicting-outputs', "build_runner")
+        let result = await freezedGenerator(className)
+        if (result) {
+            runTerminal('flutter pub run build_runner build --delete-conflicting-outputs', "build_runner")
+        }
 
     }));
 }
@@ -35,12 +37,12 @@ function findOuterKeys(jsonString: string): string[] {
 let baseClassName = ""
 let keySet = new Set()
 
-export async function freezedGenerator(costumerClass: string | undefined = undefined) {
+export async function freezedGenerator(costumerClass: string | undefined = undefined): Promise<boolean> {
     jsonObjectManger = new JsonObjectManger()
     const editor = vscode.window.activeTextEditor;
     keySet.clear()
     if (!editor)
-        return;
+        return false;
     let selectedText = getSelectedText()
     /// 用來當作response的class名稱
     const baseFileName = getActivateEditorFileName()
@@ -54,9 +56,12 @@ export async function freezedGenerator(costumerClass: string | undefined = undef
     let className = costumerClass
     if (costumerClass == undefined || '') {
         className = toUpperCamelCase(baseFileName);
-        if (getActivateText().includes(`class ${className}`)) {
-            className = findOuterKeys(getSelectedText())[0];
-            className = toUpperCamelCase(className);
+        let content = getActivateText()
+        if (content.includes(`class ${className}`)) {
+            showWarning(`Class ${className} is already exist,Try to use inner class`)
+            return false;
+            // className = findOuterKeys(getSelectedText())[0];
+            // className = toUpperCamelCase(className);
         } else {
             className = toUpperCamelCase(baseFileName);
             for (let importText of [firstImport, fileNameGPart, fileNameFPart]) {
@@ -71,6 +76,11 @@ export async function freezedGenerator(costumerClass: string | undefined = undef
     // type = string | number | boolean | object | array
     // 因為是第一層所以如果 object 則用 baseFileName 當作 class 名稱
     // 如果是 array 則需要知道是什麼類型的array parse 應該要回傳 [array 的 type]
+    let outerKey = findOuterKeys(getSelectedText())[0];
+    let useInnerClass = costumerClass == toUpperCamelCase(outerKey);
+    if (useInnerClass) {
+        jsonObject = jsonObject[outerKey]
+    }
     await parse(jsonObject, className)
     let finalResult = importLine.join('\n') + '\n\n' + jsonObjectManger.toFreezedTemplate(className!);
     console.log(`===================`);
@@ -80,7 +90,7 @@ export async function freezedGenerator(costumerClass: string | undefined = undef
     let e = new vscode.WorkspaceEdit()
     e.replace(editor.document.uri, editor.selection, finalResult)
     vscode.workspace.applyEdit(e)
-
+    return true;
 
 }
 
