@@ -78,7 +78,7 @@ export function freezedClassTemplate(className: string, fields: string[]): strin
 class ${className} with _$${className} {
 \tconst ${className}._();
 \tconst factory ${className}({\n\t\t${fields.join(',\n\t\t')},
-\t}) = _${className};
+\t}) = ${className};
 \t${fromJsonMethod}
 }`
     // if (isPlural(className) && !className.endsWith('ss')) {
@@ -98,7 +98,7 @@ class ${className} with _\$${className} {
   const ${className}._();
   const factory ${className}({
     List<Map<String, dynamic>> ${memberName},
-  }) = _${className};
+  }) = ${className};
   
   ${fromJsonMethod}
 }`;
@@ -113,7 +113,7 @@ export function freezedWrapperClassTemplate(className: string, fields: string[],
 class ${className} with _$${className} {
 \tconst ${className}._();
 \tconst factory ${className}({\n\t\t${fields.join(',\n\t\t')},
-\t}) = _${className};
+\t}) = ${className};
 \t${fromJsonMethod}
 }`
     // if (isPlural(className) && !className.endsWith('ss')) {
