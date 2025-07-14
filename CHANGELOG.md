@@ -1,3 +1,6 @@
+- 0.0.19
+- public freezed sealed class Implement class 
+
 - 0.0.16
 - Support complex Json schema
 - see more ./test
