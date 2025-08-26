@@ -64,7 +64,7 @@ function autoImportFreezed(cursorLineText: string) {
     const partFreezedLine = getPartFreezedLine()
     let text = getActivateText()
 
-    if (cursorLineText.includes('@freezed')) {
+    if (/^\s*@freezed/m.test(cursorLineText)) {
         if (!text.includes(importFreezedLine)) {
             allImport.push(importFreezedLine)
         }
