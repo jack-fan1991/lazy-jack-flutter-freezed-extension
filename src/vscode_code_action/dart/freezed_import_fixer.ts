@@ -164,7 +164,7 @@ export class FreezedFixer implements CodeActionProviderInterface<FreezedFixInfo>
         }
         if (!this.needAttention(document)) return
         //判斷正在編輯的焦點是否為@freezed行
-        if (!partLine.includes('@freezed')) return
+        if (!partLine.startsWith('@freezed')) return
         if (!text.includes(FreezedFixer.importLibName)) {
             let data = new FreezedFixInfo(getAbsFilePath(document.uri), 'fixImport', `Fix import 'package:freezed_annotation/freezed_annotation.dart';`, `import 'package:freezed_annotation/freezed_annotation.dart';`)
             this.runCommand(document, data)
