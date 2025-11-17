@@ -104,7 +104,7 @@ async function parse(jsonObject: any, parentKey: string = "", isArrayObj: boolea
             let arrayObjType = await parseArray(jsonObject, parentKey, jsonFileKey)
             if (parentKey === baseFileName) {
                 // no key Array
-                let wrapperClassName = baseFileName + "Wrapper";
+                let wrapperClassName = baseFileName + "Collection";
                 wrapperClassName = await vscode.window.showInputBox({ placeHolder: `${Icon_Warning} Input class name for No key array`, value: wrapperClassName }).then((className) => {
                     let listType = ""
                     if (className) {
@@ -114,7 +114,7 @@ async function parse(jsonObject: any, parentKey: string = "", isArrayObj: boolea
                     }
                 })
                 let wrapper = new CustomType(arrayObjType, arrayObjType, arrayObjType, true)
-                console.log(`Add wrapper ${wrapper.toFreezedFieldFormat()}`)
+                console.log(`Add Collection ${wrapper.toFreezedFieldFormat()}`)
                 jsonObjectManger.classWrapper.set(wrapperClassName, wrapper)
             }
             return arrayObjType;

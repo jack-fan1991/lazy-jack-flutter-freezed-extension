@@ -4,6 +4,7 @@ function freezedFromJsonMethod(className: string): string {
     return `factory ${className}.fromJson(Map<String, dynamic> json) => _$${className}FromJson(json);`;
 }
 function freezedWrapperFromJsonMethod(className: string, protoType: string): string {
+    return  `factory ${className}.fromList(List<dynamic> list) => ${className}(d: list.map((e) => ${protoType}.fromJson(e)).toList());`;
     return `factory ${className}.fromJson(List<dynamic> jsonArray) => _$${className}FromJson({"${toLowerCamelCase(protoType)}":jsonArray});`;
 }
 

@@ -41,8 +41,10 @@ export class JsonObjectManger {
     }
 
     // @param mainClass: 最外層的class name 這裡使用baseFileName
-    toFreezedTemplate(mainClass: string): string {
-        this.parsWrapper()
+    toFreezedTemplate(mainClass: string,parseWrapper:boolean=true): string {
+        if(parseWrapper){
+            this.parsWrapper()
+        }
         let result = ''
         let mainFreezedFields = this.getFreezedFieldsAsString(mainClass) ?? []
         let manger = this.getCustomTypeManger(mainClass)
@@ -70,9 +72,9 @@ export class JsonObjectManger {
             let customTypeManger = this.getCustomTypeManger(className)
             if (customTypeManger != null) {
                 if (subClass.length == 1) {
-                    this.toFreezedTemplate(className)
+                    this.toFreezedTemplate(className,parseWrapper=false)
                 } else {
-                    this.toFreezedTemplate(className)
+                    this.toFreezedTemplate(className,parseWrapper=false)
                 }
 
 
